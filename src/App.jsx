@@ -17,6 +17,14 @@ const CATS = [
   { id: "Village",    label: "Villages",     icon: "⛪" },
 ];
 
+const TIPS = {
+  Beach:      ["Visit early morning to avoid crowds and get the best light","Bring water and snacks — facilities may be limited at remote beaches","Check wind conditions before visiting — some beaches get very windy in the afternoon","Water shoes recommended for rocky entry points"],
+  Restaurant: ["Reservations recommended in peak season (July–August)","Ask for the daily specials — usually the freshest options","Lunch is often better value than dinner","Tipping 10% is appreciated but not mandatory"],
+  Activity:   ["Book in advance during summer months","Wear appropriate footwear and bring sun protection","Check weather forecasts — some activities close in bad conditions","Start early to avoid the midday heat"],
+  Hotel:      ["Request a sea view room when booking","Check cancellation policy before confirming","Breakfast is often worth adding — local products are excellent","Ask about early check-in if arriving on a morning flight"],
+  Village:    ["Visit on weekday mornings for the most authentic experience","Most villages have a local kafeneio (café) — a great place to meet locals","Some roads are narrow — park outside and explore on foot","Dress modestly when visiting churches or monasteries"],
+};
+
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -71,8 +79,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .chips{padding:22px 20px 28px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
 .chips::-webkit-scrollbar{display:none;}
 .chip{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:8px 16px;border-radius:24px;
-  font-size:11px;font-weight:500;letter-spacing:0.05em;
-  border:1.5px solid var(--sand);background:var(--white);color:var(--stone);}
+  font-size:11px;font-weight:500;border:1.5px solid var(--sand);background:var(--white);color:var(--stone);}
 
 .rh{height:54vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
 .rh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 80%,rgba(196,165,90,0.2) 0%,transparent 50%);}
@@ -98,7 +105,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .lc:active{transform:scale(0.97);}
 .lc-img{height:118px;background:var(--cream);position:relative;display:flex;align-items:center;justify-content:center;font-size:42px;overflow:hidden;}
 .lc-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.lc-img-emoji{position:relative;z-index:1;}
+.lc-emoji{position:relative;z-index:1;}
 .lc-feat{position:absolute;top:8px;left:8px;background:var(--gold);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;letter-spacing:0.1em;color:var(--ink);z-index:2;}
 .lc-price{position:absolute;top:8px;right:8px;background:rgba(18,18,20,0.62);border-radius:4px;padding:2px 8px;font-size:10px;color:var(--gold-lt);z-index:2;}
 .lc-body{padding:10px 13px 13px;}
@@ -107,14 +114,57 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .lc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;}
 .lc-tag{background:var(--cream);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--stone);}
 
-.empty{padding:28px 20px;text-align:center;color:var(--stone);font-size:13px;font-weight:300;letter-spacing:0.04em;}
-.empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
+/* DETAIL */
+.dp{padding-bottom:90px;}
+.dp-hero{height:58vw;min-height:240px;max-height:320px;position:relative;overflow:hidden;margin-top:52px;
+  display:flex;align-items:flex-end;background:var(--cream);}
+.dp-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.dp-hero-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;}
+.dp-hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(18,18,20,0.65) 100%);}
+.dp-hero-badges{position:relative;padding:0 20px 16px;display:flex;gap:8px;flex-wrap:wrap;}
+.dp-badge{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.08em;}
+.dp-badge-gold{background:var(--gold);color:var(--ink);}
+.dp-badge-dark{background:rgba(18,18,20,0.7);color:var(--gold-lt);border:1px solid rgba(196,165,90,0.3);}
 
+.dp-body{padding:24px 20px 0;}
+.dp-cat{font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.dp-name{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;line-height:1.1;margin-bottom:6px;}
+.dp-location{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--stone);margin-bottom:20px;}
+.dp-desc{font-size:14px;font-weight:300;line-height:1.75;color:var(--ink);margin-bottom:24px;}
+.dp-tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:28px;}
+.dp-tag{background:var(--cream);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--stone);}
+
+.dp-info-row{display:flex;gap:10px;margin-bottom:24px;}
+.dp-info-card{flex:1;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--sand);}
+.dp-info-icon{font-size:20px;margin-bottom:6px;}
+.dp-info-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);margin-bottom:3px;}
+.dp-info-value{font-size:13px;font-weight:500;color:var(--ink);}
+
+.dp-tips{background:var(--white);border-radius:16px;padding:18px;margin-bottom:24px;border:1px solid var(--sand);}
+.dp-tips-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.dp-tip{display:flex;gap:10px;margin-bottom:12px;}
+.dp-tip:last-child{margin-bottom:0;}
+.dp-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:6px;flex-shrink:0;}
+.dp-tip-text{font-size:13px;font-weight:300;line-height:1.6;color:var(--ink);}
+
+.maps-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  padding:17px;border-radius:16px;background:var(--ink);border:none;cursor:pointer;
+  font-family:'Jost',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:12px;transition:opacity 0.2s;}
+.maps-btn:active{opacity:0.82;}
+.maps-btn svg{flex-shrink:0;}
+
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:14px;border-radius:16px;background:var(--white);border:1.5px solid var(--sand);cursor:pointer;
+  font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--stone);margin-bottom:12px;transition:all 0.2s;}
+
+.empty{padding:28px 20px;text-align:center;color:var(--stone);font-size:13px;font-weight:300;}
+.empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40vh;gap:14px;}
 .spinner{width:32px;height:32px;border:2px solid var(--sand);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);}
-
 .error-box{margin:20px;padding:16px 18px;background:#fff5f5;border:1px solid #ffcccc;border-radius:12px;font-size:13px;color:#cc4444;line-height:1.5;}
 .divider{height:1px;background:var(--sand);margin:4px 20px 0;}
 .pb{height:72px;}
@@ -128,67 +178,77 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni.on .bni-l{color:var(--gold);}
 `;
 
+const getCat = id => CATS.find(c=>c.id===id) || CATS[0];
+
 export default function App() {
-  const [items, setItems]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
-  const [page, setPage]       = useState("home");
-  const [region, setRegion]   = useState(null);
+  const [items,setItems]     = useState([]);
+  const [loading,setLoading] = useState(true);
+  const [error,setError]     = useState(null);
+  const [page,setPage]       = useState("home");
+  const [region,setRegion]   = useState(null);
+  const [detail,setDetail]   = useState(null);
 
   const fetchData = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
       const res = await fetch(PROXY);
       if (!res.ok) throw new Error(`Server error ${res.status}`);
-      const data = await res.json();
-      setItems(data);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
+      setItems(await res.json());
+    } catch(e) { setError(e.message); }
+    finally { setLoading(false); }
+  };
+
+  useEffect(()=>{ fetchData(); },[]);
+
+  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); };
+  const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); };
+  const goDetail = b =>{ setDetail(b);      setPage("detail"); };
+  const goBack   = ()=>{ setPage("region"); setDetail(null); };
+
+  const forRegion = (area,cat) => items.filter(i=>i.area===area && i.category===cat);
+  const rGrad = r=>`linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
+
+  const openMaps = item => {
+    // Use exact Maps URL from Notion if available, otherwise fall back to search
+    const url = item.maps
+      ? item.maps
+      : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name+' '+item.area+' Crete Greece')}`;
+    window.open(url, "_blank");
+  };
+
+  const sharePlace = item => {
+    if (navigator.share) {
+      navigator.share({
+        title: item.name,
+        text: `Check out ${item.name} in ${item.area}, Crete — via MyGreece`,
+        url: window.location.href,
+      });
     }
   };
 
-  useEffect(() => { fetchData(); }, []);
-
-  const goHome   = () => { setPage("home"); setRegion(null); };
-  const goRegion = r  => { setRegion(r); setPage("region"); };
-  const forRegion = (area, cat) => items.filter(i => i.area === area && i.category === cat);
-  const totalPlaces = items.length;
-  const totalBeaches = items.filter(i => i.category === "Beach").length;
-  const rGrad = r => `linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
-
-  const Card = ({ b, cat }) => (
-    <div className="lc">
-      <div className="lc-img">
-        {b.image
-          ? <img src={b.image} alt={b.name} onError={e => { e.target.style.display='none'; }}/>
-          : null}
-        <span className="lc-img-emoji" style={b.image?{opacity:0}:{}}>{b.emoji || cat.icon}</span>
-        {b.featured && <div className="lc-feat">Featured</div>}
-        {b.price && <div className="lc-price">{b.price}</div>}
-      </div>
-      <div className="lc-body">
-        <div className="lc-name">{b.name}</div>
-        {b.subarea && <div className="lc-sub">📍 {b.subarea}</div>}
-        <div className="lc-tags">
-          {b.tags.slice(0,3).map((t,i) => <span key={i} className="lc-tag">{t}</span>)}
+  const Card = ({b}) => {
+    const cat = getCat(b.category);
+    return (
+      <div className="lc" onClick={()=>goDetail(b)}>
+        <div className="lc-img">
+          {b.image && <img src={b.image} alt={b.name} onError={e=>e.target.style.display='none'}/>}
+          {!b.image && <span className="lc-emoji">{b.emoji||cat.icon}</span>}
+          {b.featured && <div className="lc-feat">Featured</div>}
+          {b.price && <div className="lc-price">{b.price}</div>}
+        </div>
+        <div className="lc-body">
+          <div className="lc-name">{b.name}</div>
+          {b.subarea && <div className="lc-sub">📍 {b.subarea}</div>}
+          <div className="lc-tags">{b.tags.slice(0,3).map((t,i)=><span key={i} className="lc-tag">{t}</span>)}</div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
-  const CardRow = ({ areaId, cat }) => {
-    const list = forRegion(areaId, cat.id);
-    if (!list.length) return (
-      <div className="empty"><span>{cat.icon}</span>No {cat.label} added yet — add in Notion!</div>
-    );
-    return (
-      <div className="ls">
-        {list.map(b => <Card key={b.id} b={b} cat={cat}/>)}
-      </div>
-    );
+  const CardRow = ({areaId,cat}) => {
+    const list = forRegion(areaId,cat.id);
+    if (!list.length) return <div className="empty"><span>{cat.icon}</span>No {cat.label} yet — add in Notion!</div>;
+    return <div className="ls">{list.map(b=><Card key={b.id} b={b}/>)}</div>;
   };
 
   return (
@@ -196,67 +256,59 @@ export default function App() {
       <style>{css}</style>
       <div className="app">
 
+        {/* NAV */}
         <nav className="nav">
-          {page === "home" ? (
+          {page==="home" ? (
             <>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
               <div className="nav-right">Crete ◈</div>
             </>
           ) : (
             <>
-              <div className="nav-back" onClick={goHome}>
+              <div className="nav-back" onClick={page==="detail"?goBack:goHome}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                {page === "region" ? region.id : "Home"}
+                {page==="detail" ? (region?.id||"Back") : page==="region" ? region.id : "Home"}
               </div>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
             </>
           )}
         </nav>
 
-        {page === "home" && <>
+        {/* HOME */}
+        {page==="home" && <>
           <div className="hero">
-            <div className="hero-bg"/>
-            <div className="hero-glow"/>
-            <div className="hero-dots"/>
-            <div className="hero-fade"/>
+            <div className="hero-bg"/><div className="hero-glow"/><div className="hero-dots"/><div className="hero-fade"/>
             <div className="hero-c">
               <div className="h-eye">Your Insider Guide to</div>
               <div className="h-h1">Crete,<br/><em>Curated.</em></div>
               <div className="h-tag">Beaches, tavernas, hidden villages &amp; stays —<br/>hand-picked by locals for you.</div>
               <div className="h-stats">
                 <div className="h-stat"><div className="h-sn">4</div><div className="h-sl">Regions</div></div>
-                <div className="h-stat"><div className="h-sn">{loading ? "…" : totalBeaches}</div><div className="h-sl">Beaches</div></div>
-                <div className="h-stat"><div className="h-sn">{loading ? "…" : totalPlaces}</div><div className="h-sl">Places</div></div>
+                <div className="h-stat"><div className="h-sn">{loading?"…":items.filter(i=>i.category==="Beach").length}</div><div className="h-sl">Beaches</div></div>
+                <div className="h-stat"><div className="h-sn">{loading?"…":items.length}</div><div className="h-sl">Places</div></div>
               </div>
             </div>
           </div>
-
           <div className="sp"><div className="sh"><div className="st">Explore Regions</div></div></div>
-          {error && <div className="error-box">⚠️ Could not load data: {error}<br/><small>Check your Vercel proxy and Notion connection.</small></div>}
-
+          {error && <div className="error-box">⚠️ {error}</div>}
           <div className="regions">
-            {REGIONS.map(r => (
-              <div key={r.id} className="rc" onClick={() => goRegion(r)}>
+            {REGIONS.map(r=>(
+              <div key={r.id} className="rc" onClick={()=>goRegion(r)}>
                 <div style={{position:"absolute",inset:0,background:rGrad(r)}}/>
                 <div className="rc-shim"/><div className="rc-fade"/>
-                <div className="rc-body">
-                  <div className="rc-name">{r.id}</div>
-                  <div className="rc-sub">{r.tagline}</div>
-                </div>
+                <div className="rc-body"><div className="rc-name">{r.id}</div><div className="rc-sub">{r.tagline}</div></div>
                 <div className="rc-badge">{CATS.reduce((a,c)=>a+forRegion(r.id,c.id).length,0)} places</div>
                 <div className="rc-emoji">{r.emoji}</div>
               </div>
             ))}
           </div>
-
           <div className="sp" style={{paddingBottom:0}}><div className="sh"><div className="st">Browse by Vibe</div></div></div>
-          <div className="chips">
-            {CATS.map(c=><div key={c.id} className="chip"><span style={{fontSize:14}}>{c.icon}</span> {c.label}</div>)}
-          </div>
+          <div className="chips">{CATS.map(c=><div key={c.id} className="chip"><span style={{fontSize:14}}>{c.icon}</span> {c.label}</div>)}</div>
           <div className="pb"/>
         </>}
 
-        {page === "region" && region && <>
+        {/* REGION */}
+        {page==="region" && region && <>
           <div className="rh">
             <div style={{position:"absolute",inset:0,background:rGrad(region)}}/>
             <div className="rh-glow"/><div className="rh-fade"/>
@@ -269,33 +321,107 @@ export default function App() {
               </div>
             </div>
           </div>
-
-          {loading ? (
-            <div className="loading"><div className="spinner"/><div className="loading-text">Loading from Notion…</div></div>
-          ) : (
-            CATS.map((cat, i) => (
-              <div key={cat.id}>
-                <div className="cs">
-                  <div className="cs-head">
-                    <div className="cs-icon">{cat.icon}</div>
-                    <div className="cs-title">{cat.label}</div>
-                    <div className="cs-count">{forRegion(region.id, cat.id).length} spots</div>
+          {loading
+            ? <div className="loading"><div className="spinner"/><div className="loading-text">Loading…</div></div>
+            : CATS.map((cat,i)=>(
+                <div key={cat.id}>
+                  <div className="cs">
+                    <div className="cs-head">
+                      <div className="cs-icon">{cat.icon}</div>
+                      <div className="cs-title">{cat.label}</div>
+                      <div className="cs-count">{forRegion(region.id,cat.id).length} spots</div>
+                    </div>
+                    <CardRow areaId={region.id} cat={cat}/>
                   </div>
-                  <CardRow areaId={region.id} cat={cat}/>
+                  {i<CATS.length-1 && <div className="divider"/>}
                 </div>
-                {i < CATS.length-1 && <div className="divider"/>}
-              </div>
-            ))
-          )}
+              ))
+          }
           <div className="pb"/>
         </>}
 
+        {/* DETAIL */}
+        {page==="detail" && detail && (()=>{
+          const cat  = getCat(detail.category);
+          const tips = TIPS[detail.category]||TIPS.Beach;
+          return (
+            <div className="dp">
+              <div className="dp-hero">
+                {detail.image
+                  ? <img src={detail.image} alt={detail.name} onError={e=>e.target.style.display='none'}/>
+                  : <div className="dp-hero-emoji">{detail.emoji||cat.icon}</div>}
+                <div className="dp-hero-fade"/>
+                <div className="dp-hero-badges">
+                  {detail.featured && <span className="dp-badge dp-badge-gold">⭐ Featured</span>}
+                  {detail.price    && <span className="dp-badge dp-badge-dark">{detail.price}</span>}
+                  {detail.tags.slice(0,2).map((t,i)=><span key={i} className="dp-badge dp-badge-dark">{t}</span>)}
+                </div>
+              </div>
+
+              <div className="dp-body">
+                <div className="dp-cat">{cat.icon} {cat.label}</div>
+                <div className="dp-name">{detail.name}</div>
+                {detail.subarea && <div className="dp-location"><span>📍</span><span>{detail.subarea}, {detail.area} · Crete</span></div>}
+
+                <div className="dp-desc">
+                  {detail.description || "Add a description in your Notion database to show it here."}
+                </div>
+
+                {detail.tags.length>0 && (
+                  <div className="dp-tags">
+                    {detail.tags.map((t,i)=><span key={i} className="dp-tag">{t}</span>)}
+                  </div>
+                )}
+
+                <div className="dp-info-row">
+                  <div className="dp-info-card">
+                    <div className="dp-info-icon">💰</div>
+                    <div className="dp-info-label">Price</div>
+                    <div className="dp-info-value">{detail.price||"Free"}</div>
+                  </div>
+                  <div className="dp-info-card">
+                    <div className="dp-info-icon">📍</div>
+                    <div className="dp-info-label">Area</div>
+                    <div className="dp-info-value">{detail.area}</div>
+                  </div>
+                  <div className="dp-info-card">
+                    <div className="dp-info-icon">{cat.icon}</div>
+                    <div className="dp-info-label">Type</div>
+                    <div className="dp-info-value">{detail.category}</div>
+                  </div>
+                </div>
+
+                <div className="dp-tips">
+                  <div className="dp-tips-title">✦ Visitor Tips</div>
+                  {tips.map((tip,i)=>(
+                    <div key={i} className="dp-tip">
+                      <div className="dp-tip-dot"/>
+                      <div className="dp-tip-text">{tip}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Google Maps — uses exact Notion URL if set, otherwise searches */}
+                <button className="maps-btn" onClick={()=>openMaps(detail)}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  {detail.maps ? "Open Exact Location in Maps" : "Search in Google Maps"}
+                </button>
+
+                <button className="share-btn" onClick={()=>sharePlace(detail)}>
+                  <span>↑</span> Share this place
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* BOTTOM NAV */}
         <div className="bnav">
           {[
-            { id:"home",    icon:"🏠", label:"Home",    action: goHome },
-            { id:"Chania",  icon:"⛵", label:"Chania",  action: ()=>goRegion(REGIONS[0]) },
-            { id:"Rethymno",icon:"🏰", label:"Rethymno",action: ()=>goRegion(REGIONS[1]) },
-            { id:"refresh", icon:"↻",  label:"Refresh", action: fetchData },
+            {id:"home",    icon:"🏠",label:"Home",    action:goHome},
+            {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
+            {id:"Rethymno",icon:"🏰",label:"Rethymno",action:()=>goRegion(REGIONS[1])},
+            {id:"refresh", icon:"↻", label:"Refresh", action:fetchData},
           ].map(n=>(
             <div key={n.id} className={`bni ${page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
