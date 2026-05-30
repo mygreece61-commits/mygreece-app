@@ -17,12 +17,13 @@ const CATS = [
   { id: "Village",    label: "Villages",     icon: "⛪" },
 ];
 
-const TIPS = {
-  Beach:      ["Visit early morning to avoid crowds and get the best light","Bring water and snacks — facilities may be limited at remote beaches","Check wind conditions before visiting — some beaches get very windy in the afternoon","Water shoes recommended for rocky entry points"],
-  Restaurant: ["Reservations recommended in peak season (July–August)","Ask for the daily specials — usually the freshest options","Lunch is often better value than dinner","Tipping 10% is appreciated but not mandatory"],
-  Activity:   ["Book in advance during summer months","Wear appropriate footwear and bring sun protection","Check weather forecasts — some activities close in bad conditions","Start early to avoid the midday heat"],
-  Hotel:      ["Request a sea view room when booking","Check cancellation policy before confirming","Breakfast is often worth adding — local products are excellent","Ask about early check-in if arriving on a morning flight"],
-  Village:    ["Visit on weekday mornings for the most authentic experience","Most villages have a local kafeneio (café) — a great place to meet locals","Some roads are narrow — park outside and explore on foot","Dress modestly when visiting churches or monasteries"],
+// Fallback tips if none added in Notion
+const DEFAULT_TIPS = {
+  Beach:      ["Visit early morning to avoid crowds","Bring water and snacks — facilities may be limited","Check wind conditions before visiting","Water shoes recommended for rocky entry points"],
+  Restaurant: ["Reservations recommended in peak season","Ask for the daily specials — usually the freshest","Lunch is often better value than dinner","Tipping 10% is appreciated but not mandatory"],
+  Activity:   ["Book in advance during summer months","Wear appropriate footwear and sun protection","Check weather forecasts before heading out","Start early to avoid the midday heat"],
+  Hotel:      ["Request a sea view room when booking","Check cancellation policy before confirming","Breakfast is often worth adding","Ask about early check-in if arriving by morning flight"],
+  Village:    ["Visit on weekday mornings for authentic experience","Find the local kafeneio — great place to meet locals","Park outside and explore on foot","Dress modestly when visiting churches"],
 };
 
 const css = `
@@ -114,7 +115,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .lc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px;}
 .lc-tag{background:var(--cream);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--stone);}
 
-/* DETAIL */
 .dp{padding-bottom:90px;}
 .dp-hero{height:58vw;min-height:240px;max-height:320px;position:relative;overflow:hidden;margin-top:52px;
   display:flex;align-items:flex-end;background:var(--cream);}
@@ -152,12 +152,10 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   font-family:'Jost',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;
   text-transform:uppercase;color:var(--gold);margin-bottom:12px;transition:opacity 0.2s;}
 .maps-btn:active{opacity:0.82;}
-.maps-btn svg{flex-shrink:0;}
-
 .share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
   padding:14px;border-radius:16px;background:var(--white);border:1.5px solid var(--sand);cursor:pointer;
   font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;
-  text-transform:uppercase;color:var(--stone);margin-bottom:12px;transition:all 0.2s;}
+  text-transform:uppercase;color:var(--stone);margin-bottom:12px;}
 
 .empty{padding:28px 20px;text-align:center;color:var(--stone);font-size:13px;font-weight:300;}
 .empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
@@ -178,7 +176,15 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni.on .bni-l{color:var(--gold);}
 `;
 
-const getCat = id => CATS.find(c=>c.id===id) || CATS[0];
+const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
+
+// Parse tips: split by newline, filter empty lines
+const parseTips = (raw, category) => {
+  if (raw && raw.trim()) {
+    return raw.split("\n").map(t=>t.trim()).filter(Boolean);
+  }
+  return DEFAULT_TIPS[category] || DEFAULT_TIPS.Beach;
+};
 
 export default function App() {
   const [items,setItems]     = useState([]);
@@ -205,24 +211,19 @@ export default function App() {
   const goDetail = b =>{ setDetail(b);      setPage("detail"); };
   const goBack   = ()=>{ setPage("region"); setDetail(null); };
 
-  const forRegion = (area,cat) => items.filter(i=>i.area===area && i.category===cat);
+  const forRegion = (area,cat) => items.filter(i=>i.area===area&&i.category===cat);
   const rGrad = r=>`linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
 
   const openMaps = item => {
-    // Use exact Maps URL from Notion if available, otherwise fall back to search
     const url = item.maps
       ? item.maps
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name+' '+item.area+' Crete Greece')}`;
-    window.open(url, "_blank");
+    window.open(url,"_blank");
   };
 
   const sharePlace = item => {
     if (navigator.share) {
-      navigator.share({
-        title: item.name,
-        text: `Check out ${item.name} in ${item.area}, Crete — via MyGreece`,
-        url: window.location.href,
-      });
+      navigator.share({ title:item.name, text:`Check out ${item.name} in ${item.area}, Crete — via MyGreece`, url:window.location.href });
     }
   };
 
@@ -256,7 +257,6 @@ export default function App() {
       <style>{css}</style>
       <div className="app">
 
-        {/* NAV */}
         <nav className="nav">
           {page==="home" ? (
             <>
@@ -267,14 +267,13 @@ export default function App() {
             <>
               <div className="nav-back" onClick={page==="detail"?goBack:goHome}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                {page==="detail" ? (region?.id||"Back") : page==="region" ? region.id : "Home"}
+                {page==="detail"?(region?.id||"Back"):page==="region"?region.id:"Home"}
               </div>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
             </>
           )}
         </nav>
 
-        {/* HOME */}
         {page==="home" && <>
           <div className="hero">
             <div className="hero-bg"/><div className="hero-glow"/><div className="hero-dots"/><div className="hero-fade"/>
@@ -307,7 +306,6 @@ export default function App() {
           <div className="pb"/>
         </>}
 
-        {/* REGION */}
         {page==="region" && region && <>
           <div className="rh">
             <div style={{position:"absolute",inset:0,background:rGrad(region)}}/>
@@ -340,10 +338,9 @@ export default function App() {
           <div className="pb"/>
         </>}
 
-        {/* DETAIL */}
         {page==="detail" && detail && (()=>{
           const cat  = getCat(detail.category);
-          const tips = TIPS[detail.category]||TIPS.Beach;
+          const tips = parseTips(detail.tips, detail.category);
           return (
             <div className="dp">
               <div className="dp-hero">
@@ -364,7 +361,7 @@ export default function App() {
                 {detail.subarea && <div className="dp-location"><span>📍</span><span>{detail.subarea}, {detail.area} · Crete</span></div>}
 
                 <div className="dp-desc">
-                  {detail.description || "Add a description in your Notion database to show it here."}
+                  {detail.description || "Add a description in Notion to show it here."}
                 </div>
 
                 {detail.tags.length>0 && (
@@ -401,10 +398,9 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* Google Maps — uses exact Notion URL if set, otherwise searches */}
                 <button className="maps-btn" onClick={()=>openMaps(detail)}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  {detail.maps ? "Open Exact Location in Maps" : "Search in Google Maps"}
+                  {detail.maps?"Open Exact Location in Maps":"Search in Google Maps"}
                 </button>
 
                 <button className="share-btn" onClick={()=>sharePlace(detail)}>
@@ -415,7 +411,6 @@ export default function App() {
           );
         })()}
 
-        {/* BOTTOM NAV */}
         <div className="bnav">
           {[
             {id:"home",    icon:"🏠",label:"Home",    action:goHome},
