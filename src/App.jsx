@@ -1,29 +1,35 @@
 import { useState, useEffect } from "react";
 
-const PROXY = "https://mygreece-proxy.vercel.app/api/notion";
+const PROXY      = "https://mygreece-proxy.vercel.app/api/notion";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzptpWWo0eF9JG1SLFHNpYxQHp7AoajGZlRfmOryQD703r_RO0RekR0vIXPCx3MV_XW/exec";
+const SECRET_KEY = "mygreece2024secret"; // ← change this to match your Apps Script
 
 const REGIONS = [
-  { id: "Chania",    tagline: "Old Harbour & White Mountains",     color1: "#0A1E28", color2: "#1D5A6B", emoji: "⛵" },
-  { id: "Rethymno", tagline: "Venetian Fortresses & Monasteries",  color1: "#3A1A0A", color2: "#6B3A20", emoji: "🏰" },
-  { id: "Heraklion",tagline: "Minoan Palaces & Vineyards",         color1: "#0A2A18", color2: "#1D5A36", emoji: "🏛" },
-  { id: "Lasithi",  tagline: "Windmills, Caves & Wild East",       color1: "#1A0A38", color2: "#3A206B", emoji: "🌿" },
+  { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", emoji:"⛵" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", emoji:"🏰" },
+  { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", emoji:"🏛" },
+  { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", emoji:"🌿" },
 ];
 
 const CATS = [
-  { id: "Beach",      label: "Beaches",      icon: "🌊" },
-  { id: "Restaurant", label: "Food & Drink", icon: "🫒" },
-  { id: "Activity",   label: "Activities",   icon: "🧗" },
-  { id: "Hotel",      label: "Stay",         icon: "🏡" },
-  { id: "Village",    label: "Villages",     icon: "⛪" },
+  { id:"Beach",      label:"Beaches",      icon:"🌊" },
+  { id:"Restaurant", label:"Food & Drink", icon:"🫒" },
+  { id:"Activity",   label:"Activities",   icon:"🧗" },
+  { id:"Hotel",      label:"Stay",         icon:"🏡" },
+  { id:"Village",    label:"Villages",     icon:"⛪" },
 ];
 
-// Fallback tips if none added in Notion
 const DEFAULT_TIPS = {
   Beach:      ["Visit early morning to avoid crowds","Bring water and snacks — facilities may be limited","Check wind conditions before visiting","Water shoes recommended for rocky entry points"],
   Restaurant: ["Reservations recommended in peak season","Ask for the daily specials — usually the freshest","Lunch is often better value than dinner","Tipping 10% is appreciated but not mandatory"],
   Activity:   ["Book in advance during summer months","Wear appropriate footwear and sun protection","Check weather forecasts before heading out","Start early to avoid the midday heat"],
   Hotel:      ["Request a sea view room when booking","Check cancellation policy before confirming","Breakfast is often worth adding","Ask about early check-in if arriving by morning flight"],
   Village:    ["Visit on weekday mornings for authentic experience","Find the local kafeneio — great place to meet locals","Park outside and explore on foot","Dress modestly when visiting churches"],
+};
+
+const parseTips = (raw, cat) => {
+  if (raw && raw.trim()) return raw.split("\n").map(t=>t.trim()).filter(Boolean);
+  return DEFAULT_TIPS[cat] || DEFAULT_TIPS.Beach;
 };
 
 const css = `
@@ -37,6 +43,35 @@ const css = `
 body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-webkit-font-smoothing:antialiased;}
 .app{min-height:100vh;max-width:430px;margin:0 auto;background:var(--ivory);overflow-x:hidden;position:relative;}
 
+/* ── GATE PAGE ── */
+.gate{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--ivory);}
+.gate-logo{display:flex;align-items:baseline;gap:1px;margin-bottom:40px;}
+.gate-my{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;font-style:italic;color:var(--gold);}
+.gate-gr{font-family:'Jost',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink);}
+.gate-hero{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#0A1E28,#1D5A6B);
+  display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:28px;
+  box-shadow:0 8px 32px rgba(29,77,94,0.3);}
+.gate-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;text-align:center;margin-bottom:8px;line-height:1.2;}
+.gate-sub{font-size:13px;font-weight:300;color:var(--stone);text-align:center;line-height:1.6;margin-bottom:36px;}
+.gate-input-wrap{width:100%;max-width:340px;position:relative;margin-bottom:14px;}
+.gate-input{width:100%;padding:16px 20px;border:2px solid var(--sand);border-radius:14px;
+  font-family:'Jost',sans-serif;font-size:15px;font-weight:500;letter-spacing:0.08em;
+  color:var(--ink);background:var(--white);outline:none;transition:border 0.2s;text-align:center;text-transform:uppercase;}
+.gate-input:focus{border-color:var(--gold);}
+.gate-input::placeholder{letter-spacing:0.06em;font-weight:300;text-transform:none;color:var(--stone);}
+.gate-btn{width:100%;max-width:340px;padding:16px;border-radius:14px;background:var(--ink);
+  color:var(--gold);font-family:'Jost',sans-serif;font-size:13px;font-weight:600;
+  letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;transition:opacity 0.2s;margin-bottom:16px;}
+.gate-btn:active{opacity:0.82;}
+.gate-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.gate-error{font-size:12px;color:#cc4444;text-align:center;margin-bottom:8px;min-height:18px;}
+.gate-success{font-size:12px;color:#2d8a4e;text-align:center;margin-bottom:8px;}
+.gate-footer{font-size:11px;color:var(--stone);text-align:center;line-height:1.6;margin-top:8px;}
+.gate-spinner{width:20px;height:20px;border:2px solid rgba(196,165,90,0.3);border-top-color:var(--gold);
+  border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── NAV ── */
 .nav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:200;
   padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;
   background:rgba(249,246,240,0.93);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
@@ -44,8 +79,9 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .logo-my{font-family:'Playfair Display',serif;font-size:21px;font-weight:400;font-style:italic;color:var(--gold);}
 .logo-gr{font-family:'Jost',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink);}
 .nav-back{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);cursor:pointer;}
-.nav-right{font-size:10px;letter-spacing:0.14em;color:var(--stone);text-transform:uppercase;}
+.nav-right{font-size:10px;letter-spacing:0.14em;color:var(--stone);text-transform:uppercase;cursor:pointer;}
 
+/* ── HERO ── */
 .hero{height:76vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
 .hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0A1E28 0%,#1D4D5E 50%,#3A7A90 100%);}
 .hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 22% 68%,rgba(196,165,90,0.2) 0%,transparent 55%);}
@@ -116,8 +152,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .lc-tag{background:var(--cream);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--stone);}
 
 .dp{padding-bottom:90px;}
-.dp-hero{height:58vw;min-height:240px;max-height:320px;position:relative;overflow:hidden;margin-top:52px;
-  display:flex;align-items:flex-end;background:var(--cream);}
+.dp-hero{height:58vw;min-height:240px;max-height:320px;position:relative;overflow:hidden;margin-top:52px;display:flex;align-items:flex-end;background:var(--cream);}
 .dp-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
 .dp-hero-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:64px;}
 .dp-hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(18,18,20,0.65) 100%);}
@@ -125,7 +160,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .dp-badge{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:0.08em;}
 .dp-badge-gold{background:var(--gold);color:var(--ink);}
 .dp-badge-dark{background:rgba(18,18,20,0.7);color:var(--gold-lt);border:1px solid rgba(196,165,90,0.3);}
-
 .dp-body{padding:24px 20px 0;}
 .dp-cat{font-size:10px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
 .dp-name{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;line-height:1.1;margin-bottom:6px;}
@@ -133,20 +167,17 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .dp-desc{font-size:14px;font-weight:300;line-height:1.75;color:var(--ink);margin-bottom:24px;}
 .dp-tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:28px;}
 .dp-tag{background:var(--cream);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--stone);}
-
 .dp-info-row{display:flex;gap:10px;margin-bottom:24px;}
 .dp-info-card{flex:1;background:var(--white);border-radius:14px;padding:14px;border:1px solid var(--sand);}
 .dp-info-icon{font-size:20px;margin-bottom:6px;}
 .dp-info-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);margin-bottom:3px;}
 .dp-info-value{font-size:13px;font-weight:500;color:var(--ink);}
-
 .dp-tips{background:var(--white);border-radius:16px;padding:18px;margin-bottom:24px;border:1px solid var(--sand);}
 .dp-tips-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
 .dp-tip{display:flex;gap:10px;margin-bottom:12px;}
 .dp-tip:last-child{margin-bottom:0;}
 .dp-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:6px;flex-shrink:0;}
 .dp-tip-text{font-size:13px;font-weight:300;line-height:1.6;color:var(--ink);}
-
 .maps-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
   padding:17px;border-radius:16px;background:var(--ink);border:none;cursor:pointer;
   font-family:'Jost',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;
@@ -161,7 +192,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40vh;gap:14px;}
 .spinner{width:32px;height:32px;border:2px solid var(--sand);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);}
 .error-box{margin:20px;padding:16px 18px;background:#fff5f5;border:1px solid #ffcccc;border-radius:12px;font-size:13px;color:#cc4444;line-height:1.5;}
 .divider{height:1px;background:var(--sand);margin:4px 20px 0;}
@@ -178,15 +208,19 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 
 const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
 
-// Parse tips: split by newline, filter empty lines
-const parseTips = (raw, category) => {
-  if (raw && raw.trim()) {
-    return raw.split("\n").map(t=>t.trim()).filter(Boolean);
-  }
-  return DEFAULT_TIPS[category] || DEFAULT_TIPS.Beach;
+// Read code from URL param
+const getUrlCode = () => {
+  const p = new URLSearchParams(window.location.search);
+  return p.get("code") || "";
 };
 
 export default function App() {
+  const [access,setAccess]   = useState(false);   // has valid code
+  const [checking,setChecking] = useState(true);  // checking stored/url code
+  const [codeInput,setCodeInput] = useState("");
+  const [codeError,setCodeError] = useState("");
+  const [codeLoading,setCodeLoading] = useState(false);
+
   const [items,setItems]     = useState([]);
   const [loading,setLoading] = useState(true);
   const [error,setError]     = useState(null);
@@ -194,7 +228,55 @@ export default function App() {
   const [region,setRegion]   = useState(null);
   const [detail,setDetail]   = useState(null);
 
-  const fetchData = async () => {
+  // On mount: check URL param or localStorage
+  useEffect(()=>{
+    const stored = localStorage.getItem("mg_code");
+    const urlCode = getUrlCode();
+    const toCheck = urlCode || stored;
+    if (toCheck) {
+      verifyCode(toCheck, true);
+    } else {
+      setChecking(false);
+    }
+  },[]);
+
+  const verifyCode = async (code, silent=false) => {
+    if (!silent) setCodeLoading(true);
+    setCodeError("");
+    try {
+      const url = `${SCRIPT_URL}?action=verify&key=${SECRET_KEY}&code=${encodeURIComponent(code.trim().toUpperCase())}`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("mg_code", code.trim().toUpperCase());
+        setAccess(true);
+        fetchContent();
+      } else {
+        if (!silent) setCodeError("Invalid code. Please check and try again.");
+        localStorage.removeItem("mg_code");
+      }
+    } catch(e) {
+      if (!silent) setCodeError("Connection error. Please try again.");
+    } finally {
+      setCodeLoading(false);
+      setChecking(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!codeInput.trim()) { setCodeError("Please enter your access code."); return; }
+    verifyCode(codeInput);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("mg_code");
+    setAccess(false);
+    setPage("home");
+    setRegion(null);
+    setDetail(null);
+  };
+
+  const fetchContent = async () => {
     setLoading(true); setError(null);
     try {
       const res = await fetch(PROXY);
@@ -203,8 +285,6 @@ export default function App() {
     } catch(e) { setError(e.message); }
     finally { setLoading(false); }
   };
-
-  useEffect(()=>{ fetchData(); },[]);
 
   const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); };
   const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); };
@@ -219,12 +299,6 @@ export default function App() {
       ? item.maps
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name+' '+item.area+' Crete Greece')}`;
     window.open(url,"_blank");
-  };
-
-  const sharePlace = item => {
-    if (navigator.share) {
-      navigator.share({ title:item.name, text:`Check out ${item.name} in ${item.area}, Crete — via MyGreece`, url:window.location.href });
-    }
   };
 
   const Card = ({b}) => {
@@ -248,10 +322,57 @@ export default function App() {
 
   const CardRow = ({areaId,cat}) => {
     const list = forRegion(areaId,cat.id);
-    if (!list.length) return <div className="empty"><span>{cat.icon}</span>No {cat.label} yet — add in Notion!</div>;
+    if (!list.length) return <div className="empty"><span>{cat.icon}</span>No {cat.label} yet!</div>;
     return <div className="ls">{list.map(b=><Card key={b.id} b={b}/>)}</div>;
   };
 
+  // ── CHECKING stored code ──
+  if (checking) {
+    return (
+      <>
+        <style>{css}</style>
+        <div className="gate">
+          <div className="gate-logo"><span className="gate-my">My</span><span className="gate-gr">Greece</span></div>
+          <div className="gate-spinner"/>
+        </div>
+      </>
+    );
+  }
+
+  // ── ACCESS GATE ──
+  if (!access) {
+    return (
+      <>
+        <style>{css}</style>
+        <div className="gate">
+          <div className="gate-logo"><span className="gate-my">My</span><span className="gate-gr">Greece</span></div>
+          <div className="gate-hero">🌊</div>
+          <div className="gate-title">Your Crete Guide<br/>Awaits</div>
+          <div className="gate-sub">Enter your unique access code below to unlock the full MyGreece experience.</div>
+          <div className="gate-input-wrap">
+            <input
+              className="gate-input"
+              placeholder="Enter your access code"
+              value={codeInput}
+              onChange={e=>setCodeInput(e.target.value.toUpperCase())}
+              onKeyDown={e=>e.key==="Enter"&&handleSubmit()}
+              maxLength={20}
+            />
+          </div>
+          <div className="gate-error">{codeError}</div>
+          <button className="gate-btn" onClick={handleSubmit} disabled={codeLoading}>
+            {codeLoading ? <div className="gate-spinner"/> : "Unlock MyGreece →"}
+          </button>
+          <div className="gate-footer">
+            Purchased access? Check your email for your unique code.<br/>
+            Need help? Contact us at mygreece61@gmail.com
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ── MAIN APP (access granted) ──
   return (
     <>
       <style>{css}</style>
@@ -261,7 +382,7 @@ export default function App() {
           {page==="home" ? (
             <>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
-              <div className="nav-right">Crete ◈</div>
+              <div className="nav-right" onClick={logout} title="Sign out">✕ Exit</div>
             </>
           ) : (
             <>
@@ -344,9 +465,7 @@ export default function App() {
           return (
             <div className="dp">
               <div className="dp-hero">
-                {detail.image
-                  ? <img src={detail.image} alt={detail.name} onError={e=>e.target.style.display='none'}/>
-                  : <div className="dp-hero-emoji">{detail.emoji||cat.icon}</div>}
+                {detail.image ? <img src={detail.image} alt={detail.name} onError={e=>e.target.style.display='none'}/> : <div className="dp-hero-emoji">{detail.emoji||cat.icon}</div>}
                 <div className="dp-hero-fade"/>
                 <div className="dp-hero-badges">
                   {detail.featured && <span className="dp-badge dp-badge-gold">⭐ Featured</span>}
@@ -354,56 +473,28 @@ export default function App() {
                   {detail.tags.slice(0,2).map((t,i)=><span key={i} className="dp-badge dp-badge-dark">{t}</span>)}
                 </div>
               </div>
-
               <div className="dp-body">
                 <div className="dp-cat">{cat.icon} {cat.label}</div>
                 <div className="dp-name">{detail.name}</div>
                 {detail.subarea && <div className="dp-location"><span>📍</span><span>{detail.subarea}, {detail.area} · Crete</span></div>}
-
-                <div className="dp-desc">
-                  {detail.description || "Add a description in Notion to show it here."}
-                </div>
-
-                {detail.tags.length>0 && (
-                  <div className="dp-tags">
-                    {detail.tags.map((t,i)=><span key={i} className="dp-tag">{t}</span>)}
-                  </div>
-                )}
-
+                <div className="dp-desc">{detail.description||"Add a description in Notion to show it here."}</div>
+                {detail.tags.length>0 && <div className="dp-tags">{detail.tags.map((t,i)=><span key={i} className="dp-tag">{t}</span>)}</div>}
                 <div className="dp-info-row">
-                  <div className="dp-info-card">
-                    <div className="dp-info-icon">💰</div>
-                    <div className="dp-info-label">Price</div>
-                    <div className="dp-info-value">{detail.price||"Free"}</div>
-                  </div>
-                  <div className="dp-info-card">
-                    <div className="dp-info-icon">📍</div>
-                    <div className="dp-info-label">Area</div>
-                    <div className="dp-info-value">{detail.area}</div>
-                  </div>
-                  <div className="dp-info-card">
-                    <div className="dp-info-icon">{cat.icon}</div>
-                    <div className="dp-info-label">Type</div>
-                    <div className="dp-info-value">{detail.category}</div>
-                  </div>
+                  <div className="dp-info-card"><div className="dp-info-icon">💰</div><div className="dp-info-label">Price</div><div className="dp-info-value">{detail.price||"Free"}</div></div>
+                  <div className="dp-info-card"><div className="dp-info-icon">📍</div><div className="dp-info-label">Area</div><div className="dp-info-value">{detail.area}</div></div>
+                  <div className="dp-info-card"><div className="dp-info-icon">{cat.icon}</div><div className="dp-info-label">Type</div><div className="dp-info-value">{detail.category}</div></div>
                 </div>
-
                 <div className="dp-tips">
                   <div className="dp-tips-title">✦ Visitor Tips</div>
                   {tips.map((tip,i)=>(
-                    <div key={i} className="dp-tip">
-                      <div className="dp-tip-dot"/>
-                      <div className="dp-tip-text">{tip}</div>
-                    </div>
+                    <div key={i} className="dp-tip"><div className="dp-tip-dot"/><div className="dp-tip-text">{tip}</div></div>
                   ))}
                 </div>
-
                 <button className="maps-btn" onClick={()=>openMaps(detail)}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   {detail.maps?"Open Exact Location in Maps":"Search in Google Maps"}
                 </button>
-
-                <button className="share-btn" onClick={()=>sharePlace(detail)}>
+                <button className="share-btn" onClick={()=>navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:window.location.href})}>
                   <span>↑</span> Share this place
                 </button>
               </div>
@@ -416,7 +507,7 @@ export default function App() {
             {id:"home",    icon:"🏠",label:"Home",    action:goHome},
             {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
             {id:"Rethymno",icon:"🏰",label:"Rethymno",action:()=>goRegion(REGIONS[1])},
-            {id:"refresh", icon:"↻", label:"Refresh", action:fetchData},
+            {id:"refresh", icon:"↻", label:"Refresh", action:fetchContent},
           ].map(n=>(
             <div key={n.id} className={`bni ${page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
