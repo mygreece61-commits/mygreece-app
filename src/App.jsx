@@ -67,6 +67,17 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .gate-error{font-size:12px;color:#cc4444;text-align:center;margin-bottom:8px;min-height:18px;}
 .gate-success{font-size:12px;color:#2d8a4e;text-align:center;margin-bottom:8px;}
 .gate-footer{font-size:11px;color:var(--stone);text-align:center;line-height:1.6;margin-top:8px;}
+.gate-divider{display:flex;align-items:center;gap:12px;width:100%;max-width:340px;margin:20px 0;}
+.gate-divider-line{flex:1;height:1px;background:var(--sand);}
+.gate-divider-text{font-size:11px;color:var(--stone);letter-spacing:0.08em;text-transform:uppercase;}
+.gate-buy-btn{width:100%;max-width:340px;padding:16px;border-radius:14px;
+  background:linear-gradient(135deg,#C4A55A,#E8D8AC);
+  color:var(--ink);font-family:'Jost',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;
+  transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 20px rgba(196,165,90,0.35);}
+.gate-buy-btn:active{opacity:0.85;}
+.gate-buy-sub{font-size:11px;color:var(--stone);text-align:center;margin-top:8px;}
 .gate-spinner{width:20px;height:20px;border:2px solid rgba(196,165,90,0.3);border-top-color:var(--gold);
   border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -364,9 +375,19 @@ export default function App() {
             {codeLoading ? <div className="gate-spinner"/> : "Unlock MyGreece →"}
           </button>
           <div className="gate-footer">
-            Purchased access? Check your email for your unique code.<br/>
-            Need help? Contact us at mygreece61@gmail.com
+            Already purchased? Check your email for your unique code.
           </div>
+
+          <div className="gate-divider">
+            <div className="gate-divider-line"/>
+            <div className="gate-divider-text">or</div>
+            <div className="gate-divider-line"/>
+          </div>
+
+          <button className="gate-buy-btn" onClick={()=>window.open("https://buy.stripe.com/bJe00cd2qdis4zA2lK8ww00","_blank")}>
+            <span>✦</span> Get Access — Buy Now
+          </button>
+          <div className="gate-buy-sub">One payment · Lifetime access · Instant delivery</div>
         </div>
       </>
     );
