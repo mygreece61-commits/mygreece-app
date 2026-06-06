@@ -239,9 +239,34 @@ export default function App() {
   const [region,setRegion]   = useState(null);
   const [detail,setDetail]   = useState(null);
 
+  // Device ID — persistent UUID per browser
+  const getDeviceId = () => {
+    let id = localStorage.getItem("mg_device_id");
+    if (!id) {
+      id = "dev_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
+      localStorage.setItem("mg_device_id", id);
+    }
+    return id;
+  };
+
+  // Track login silently
+  const trackLogin = async (code) => {
+    try {
+      await fetch(`${PROXY}?action=track`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          deviceId:  getDeviceId(),
+          userAgent: navigator.userAgent,
+        }),
+      });
+    } catch(e) { console.warn("Tracking failed:", e); }
+  };
+
   // On mount: check URL param or localStorage
   useEffect(()=>{
-    const stored = localStorage.getItem("mg_code");
+    const stored  = localStorage.getItem("mg_code");
     const urlCode = getUrlCode();
     const toCheck = urlCode || stored;
     if (toCheck) {
@@ -255,12 +280,13 @@ export default function App() {
     if (!silent) setCodeLoading(true);
     setCodeError("");
     try {
-      const url = `${SCRIPT_URL}?action=verify&key=${SECRET_KEY}&code=${encodeURIComponent(code.trim().toUpperCase())}`;
+      const url = `${PROXY}?action=verify&code=${encodeURIComponent(code.trim().toUpperCase())}`;
       const res  = await fetch(url);
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("mg_code", code.trim().toUpperCase());
         setAccess(true);
+        trackLogin(code.trim().toUpperCase());
         fetchContent();
       } else {
         if (!silent) setCodeError("Invalid code. Please check and try again.");
