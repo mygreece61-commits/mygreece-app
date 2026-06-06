@@ -199,6 +199,29 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;
   text-transform:uppercase;color:var(--stone);margin-bottom:12px;}
 
+/* INFO PAGE */
+.info-page{padding:72px 20px 100px;}
+.info-hero{background:linear-gradient(135deg,#0A1E28,#1D5A6B);border-radius:20px;padding:28px 24px;margin-bottom:28px;}
+.info-hero-eye{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.info-hero-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:8px;}
+.info-hero-sub{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;}
+.info-section{margin-bottom:20px;}
+.info-section-title{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--sand);}
+.info-card{background:var(--white);border-radius:14px;padding:18px;margin-bottom:10px;border:1px solid var(--sand);}
+.info-card-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:10px;}
+.info-card-icon{font-size:18px;}
+.info-card-body{font-size:13px;font-weight:300;color:var(--stone);line-height:1.7;}
+.info-card-body strong{color:var(--ink);font-weight:500;}
+.info-card-body ul{padding-left:16px;margin-top:8px;}
+.info-card-body ul li{margin-bottom:5px;}
+.info-warning{background:#fff8f0;border:1.5px solid #f0d0a0;border-radius:14px;padding:16px;margin-bottom:10px;}
+.info-warning-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#c07820;margin-bottom:8px;}
+.info-warning-body{font-size:12px;color:#8a6030;line-height:1.6;}
+.info-contact-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:15px;border-radius:14px;background:var(--ink);color:var(--gold);
+  font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.1em;
+  text-transform:uppercase;border:none;cursor:pointer;margin-top:8px;}
+
 .empty{padding:28px 20px;text-align:center;color:var(--stone);font-size:13px;font-weight:300;}
 .empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40vh;gap:14px;}
@@ -549,14 +572,84 @@ export default function App() {
           );
         })()}
 
+        {/* INFO PAGE */}
+        {page==="info" && (
+          <div className="info-page">
+            <div className="info-hero">
+              <div className="info-hero-eye">MyGreece ◈ Guidelines</div>
+              <div className="info-hero-title">App Guidelines &amp; Important Information</div>
+              <div className="info-hero-sub">Please read carefully before using the app.</div>
+            </div>
+
+            <div className="info-section">
+              <div className="info-section-title">🍽 Reservations</div>
+              <div className="info-card">
+                <div className="info-card-title"><span className="info-card-icon">📧</span>How to Request a Reservation</div>
+                <div className="info-card-body">
+                  If you would like us to arrange a reservation for a restaurant, accommodation, or activity, simply send us an email with the following details:
+                  <ul>
+                    <li>Name of the restaurant, accommodation, or activity</li>
+                    <li>Preferred date and time</li>
+                    <li>Number of guests / participants</li>
+                    <li>Any special requests or requirements</li>
+                  </ul>
+                  <br/>We will do our best to assist you and confirm availability.
+                </div>
+              </div>
+            </div>
+
+            <div className="info-section">
+              <div className="info-section-title">🔐 Account & Device Policy</div>
+              <div className="info-warning">
+                <div className="info-warning-title">⚠️ One Device Per Access Code</div>
+                <div className="info-warning-body">
+                  Each access code is valid for <strong>one device only</strong>. It is strictly prohibited to use the same access code on multiple active devices. If our system detects that an access code has been shared or used on more than one device, access may be <strong>permanently revoked</strong> for all involved users.
+                </div>
+              </div>
+              <div className="info-card">
+                <div className="info-card-title"><span className="info-card-icon">🔒</span>Keep Your Code Private</div>
+                <div className="info-card-body">
+                  Please do not share your access code or application link with anyone. Your code is personal and linked to your purchase.
+                </div>
+              </div>
+            </div>
+
+            <div className="info-section">
+              <div className="info-section-title">💳 Refund Policy</div>
+              <div className="info-card">
+                <div className="info-card-title"><span className="info-card-icon">❌</span>No Refunds</div>
+                <div className="info-card-body">
+                  All purchases are final. <strong>No refunds will be issued under any circumstances.</strong> Please make sure you understand what you are purchasing before completing your payment.
+                </div>
+              </div>
+            </div>
+
+            <div className="info-section">
+              <div className="info-section-title">💬 Support</div>
+              <div className="info-card">
+                <div className="info-card-title"><span className="info-card-icon">🤝</span>We're Here to Help</div>
+                <div className="info-card-body">
+                  If you have any questions, need assistance, or require support, feel free to contact us at any time via email. We will be happy to help.
+                </div>
+              </div>
+              <button className="info-contact-btn" onClick={()=>window.open("mailto:mygreece61@gmail.com","_blank")}>
+                ✉️ Contact Us — mygreece61@gmail.com
+              </button>
+            </div>
+
+            <div style={{height:80}}/>
+          </div>
+        )}
+
         <div className="bnav">
           {[
             {id:"home",    icon:"🏠",label:"Home",    action:goHome},
             {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
             {id:"Rethymno",icon:"🏰",label:"Rethymno",action:()=>goRegion(REGIONS[1])},
+            {id:"info",    icon:"ℹ️", label:"Info",    action:()=>setPage("info")},
             {id:"refresh", icon:"↻", label:"Refresh", action:fetchContent},
           ].map(n=>(
-            <div key={n.id} className={`bni ${page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
+            <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
               <div className="bni-l">{n.label}</div>
             </div>
