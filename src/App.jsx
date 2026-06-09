@@ -396,21 +396,36 @@ export default function App() {
     Activity: "#1A7A4A", Hotel: "#4A1D7A", Village: "#9E4A1D",
   };
 
-  // Init Google Map
+  // Init Google Map — robust version that survives re-renders
   const initMap = useCallback(() => {
-    if (!mapRef.current || gMapRef.current) return;
+    if (!mapRef.current) return;
     const GKEY = import.meta.env.VITE_GOOGLE_MAPS_KEY;
     if (!GKEY) return;
-    if (!window.google) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${GKEY}&callback=initMyGreeceMap`;
-      script.async = true;
-      window.initMyGreeceMap = () => createMap();
-      document.head.appendChild(script);
-    } else {
-      createMap();
+
+    // If map already exists, just re-attach and re-add markers
+    if (gMapRef.current) {
+      // Re-trigger resize in case container changed
+      window.google.maps.event.trigger(gMapRef.current, "resize");
+      addMarkers(gMapRef.current, mapFilter);
+      return;
     }
-  }, [items]);
+
+    if (window.google && window.google.maps) {
+      createMap();
+      return;
+    }
+
+    // Check if script already loading
+    if (document.getElementById("gmaps-script")) return;
+
+    const script = document.createElement("script");
+    script.id = "gmaps-script";
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${GKEY}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => createMap();
+    document.head.appendChild(script);
+  }, [items, mapFilter]);
 
   const createMap = () => {
     if (!mapRef.current) return;
@@ -492,8 +507,10 @@ export default function App() {
 
   // Load map when page becomes "map"
   useEffect(() => {
-    if (page === "map" && items.length > 0) {
-      setTimeout(() => initMap(), 100);
+    if (page === "map") {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => initMap(), 150);
+      return () => clearTimeout(timer);
     }
   }, [page, items]);
 
