@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const PROXY      = "https://mygreece-proxy.vercel.app/api/notion";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzptpWWo0eF9JG1SLFHNpYxQHp7AoajGZlRfmOryQD703r_RO0RekR0vIXPCx3MV_XW/exec";
@@ -199,6 +199,39 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;
   text-transform:uppercase;color:var(--stone);margin-bottom:12px;}
 
+/* MAP PAGE */
+.map-page{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100vh;z-index:50;}
+.map-container{position:absolute;inset:0;top:52px;bottom:68px;}
+.map-filters{position:absolute;top:52px;left:0;right:0;z-index:60;
+  padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
+  background:rgba(249,246,240,0.93);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--sand);}
+.map-filters::-webkit-scrollbar{display:none;}
+.map-chip{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;
+  font-size:11px;font-weight:500;cursor:pointer;transition:all 0.18s;
+  border:1.5px solid var(--sand);background:var(--white);color:var(--stone);}
+.map-chip.on{background:var(--ink);color:var(--gold);border-color:var(--ink);}
+.map-container{position:absolute;top:100px;left:0;right:0;bottom:68px;}
+.map-div{width:100%;height:100%;}
+.map-card{position:absolute;bottom:80px;left:16px;right:16px;z-index:60;
+  background:var(--white);border-radius:16px;padding:16px;
+  display:flex;gap:12px;align-items:center;
+  box-shadow:0 8px 32px rgba(18,18,20,0.15);border:1px solid var(--sand);
+  animation:slideup 0.25s ease;}
+@keyframes slideup{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.map-card-img{width:56px;height:56px;border-radius:10px;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden;}
+.map-card-img img{width:100%;height:100%;object-fit:cover;}
+.map-card-info{flex:1;min-width:0;}
+.map-card-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.map-card-meta{font-size:11px;color:var(--stone);margin-bottom:6px;}
+.map-card-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.map-card-tag{background:var(--cream);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--stone);}
+.map-card-arrow{width:36px;height:36px;border-radius:50%;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;}
+.map-loading{position:absolute;inset:0;top:100px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;background:var(--cream);}
+
 /* INFO PAGE */
 .info-page{padding:72px 20px 100px;}
 .info-hero{background:linear-gradient(135deg,#0A1E28,#1D5A6B);border-radius:20px;padding:28px 24px;margin-bottom:28px;}
@@ -261,6 +294,11 @@ export default function App() {
   const [page,setPage]       = useState("home");
   const [region,setRegion]   = useState(null);
   const [detail,setDetail]   = useState(null);
+  const [mapPin,setMapPin]   = useState(null);
+  const [mapFilter,setMapFilter] = useState("all");
+  const mapRef               = useRef(null);
+  const gMapRef              = useRef(null);
+  const markersRef           = useRef([]);
 
   // Device ID — persistent UUID per browser
   const getDeviceId = () => {
@@ -346,10 +384,123 @@ export default function App() {
     finally { setLoading(false); }
   };
 
-  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); };
+  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); setMapPin(null); };
   const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); };
   const goDetail = b =>{ setDetail(b);      setPage("detail"); };
   const goBack   = ()=>{ setPage("region"); setDetail(null); };
+  const goMap    = ()=>{ setPage("map");    setDetail(null); setRegion(null); };
+
+  // Category colors for map pins
+  const CAT_COLORS = {
+    Beach: "#1D7A9E", Restaurant: "#7A5C1E",
+    Activity: "#1A7A4A", Hotel: "#4A1D7A", Village: "#9E4A1D",
+  };
+
+  // Init Google Map
+  const initMap = useCallback(() => {
+    if (!mapRef.current || gMapRef.current) return;
+    const GKEY = import.meta.env.VITE_GOOGLE_MAPS_KEY;
+    if (!GKEY) return;
+    if (!window.google) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GKEY}&callback=initMyGreeceMap`;
+      script.async = true;
+      window.initMyGreeceMap = () => createMap();
+      document.head.appendChild(script);
+    } else {
+      createMap();
+    }
+  }, [items]);
+
+  const createMap = () => {
+    if (!mapRef.current) return;
+    const map = new window.google.maps.Map(mapRef.current, {
+      center: { lat: 35.2401, lng: 24.8093 },
+      zoom: 9,
+      mapTypeId: "roadmap",
+      disableDefaultUI: true,
+      zoomControl: true,
+      styles: [
+        { featureType:"water", stylers:[{color:"#a8d4e6"}] },
+        { featureType:"landscape", stylers:[{color:"#f2ede3"}] },
+        { featureType:"road", stylers:[{color:"#ffffff"}] },
+        { featureType:"poi", stylers:[{visibility:"off"}] },
+        { featureType:"transit", stylers:[{visibility:"off"}] },
+        { elementType:"labels.text.fill", stylers:[{color:"#18181A"}] },
+      ],
+    });
+    gMapRef.current = map;
+    addMarkers(map, "all");
+  };
+
+  const addMarkers = (map, filter) => {
+    // Clear existing markers
+    markersRef.current.forEach(m => m.setMap(null));
+    markersRef.current = [];
+
+    const toShow = filter === "all" ? items : items.filter(i => i.category === filter);
+
+    toShow.forEach(item => {
+      if (!item.maps) return;
+      // Extract lat/lng from Google Maps URL
+      const coords = extractCoords(item.maps);
+      if (!coords) return;
+
+      const color = CAT_COLORS[item.category] || "#C4A55A";
+      const marker = new window.google.maps.Marker({
+        position: coords,
+        map,
+        title: item.name,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: color,
+          fillOpacity: 1,
+          strokeColor: "#ffffff",
+          strokeWeight: 2,
+        },
+      });
+
+      // Info label
+      const label = new window.google.maps.InfoWindow({
+        content: `<div style="font-family:Jost,sans-serif;font-size:12px;font-weight:500;color:#18181A;padding:2px 4px;">${item.name}</div>`,
+        disableAutoPan: true,
+      });
+
+      marker.addListener("click", () => {
+        setMapPin(item);
+        map.panTo(coords);
+      });
+
+      markersRef.current.push(marker);
+    });
+  };
+
+  const extractCoords = (url) => {
+    if (!url) return null;
+    // Try @lat,lng format
+    const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (atMatch) return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
+    // Try ?q=lat,lng format
+    const qMatch = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (qMatch) return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
+    // Try ll=lat,lng
+    const llMatch = url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
+    if (llMatch) return { lat: parseFloat(llMatch[1]), lng: parseFloat(llMatch[2]) };
+    return null;
+  };
+
+  // Load map when page becomes "map"
+  useEffect(() => {
+    if (page === "map" && items.length > 0) {
+      setTimeout(() => initMap(), 100);
+    }
+  }, [page, items]);
+
+  // Filter markers when mapFilter changes
+  useEffect(() => {
+    if (gMapRef.current) addMarkers(gMapRef.current, mapFilter);
+  }, [mapFilter]);
 
   const forRegion = (area,cat) => items.filter(i=>i.area===area&&i.category===cat);
   const rGrad = r=>`linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
@@ -572,6 +723,64 @@ export default function App() {
           );
         })()}
 
+        {/* MAP PAGE */}
+        {page==="map" && (
+          <div className="map-page">
+            {/* Filters */}
+            <div className="map-filters">
+              {[
+                {id:"all",      label:"All",        icon:"🗺"},
+                {id:"Beach",    label:"Beaches",    icon:"🌊"},
+                {id:"Restaurant",label:"Food",      icon:"🫒"},
+                {id:"Hotel",    label:"Stay",       icon:"🏡"},
+                {id:"Activity", label:"Activities", icon:"🧗"},
+                {id:"Village",  label:"Villages",   icon:"⛪"},
+              ].map(f=>(
+                <div key={f.id}
+                  className={`map-chip ${mapFilter===f.id?"on":""}`}
+                  onClick={()=>setMapFilter(f.id)}>
+                  <span>{f.icon}</span>{f.label}
+                </div>
+              ))}
+            </div>
+
+            {/* Map container */}
+            <div className="map-container">
+              {!import.meta.env.VITE_GOOGLE_MAPS_KEY ? (
+                <div className="map-loading">
+                  <div style={{fontSize:40}}>🗺</div>
+                  <div style={{fontSize:13,color:"var(--stone)"}}>Google Maps API key not found</div>
+                </div>
+              ) : (
+                <div ref={mapRef} className="map-div"/>
+              )}
+            </div>
+
+            {/* Place card popup */}
+            {mapPin && (
+              <div className="map-card">
+                <div className="map-card-img">
+                  {mapPin.image
+                    ? <img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>
+                    : mapPin.emoji || getCat(mapPin.category).icon}
+                </div>
+                <div className="map-card-info">
+                  <div className="map-card-name">{mapPin.name}</div>
+                  <div className="map-card-meta">📍 {mapPin.subarea}, {mapPin.area}</div>
+                  <div className="map-card-tags">
+                    {mapPin.tags.slice(0,3).map((t,i)=><span key={i} className="map-card-tag">{t}</span>)}
+                  </div>
+                </div>
+                <div className="map-card-arrow" onClick={()=>{
+                  setDetail(mapPin);
+                  setPage("detail");
+                  setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);
+                }}>→</div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* INFO PAGE */}
         {page==="info" && (
           <div className="info-page">
@@ -644,8 +853,8 @@ export default function App() {
         <div className="bnav">
           {[
             {id:"home",    icon:"🏠",label:"Home",    action:goHome},
+            {id:"map",     icon:"🗺", label:"Map",     action:goMap},
             {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
-            {id:"Rethymno",icon:"🏰",label:"Rethymno",action:()=>goRegion(REGIONS[1])},
             {id:"info",    icon:"ℹ️", label:"Info",    action:()=>setPage("info")},
             {id:"refresh", icon:"↻", label:"Refresh", action:fetchContent},
           ].map(n=>(
