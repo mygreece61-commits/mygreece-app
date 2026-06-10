@@ -386,11 +386,13 @@ export default function App() {
     finally { setLoading(false); }
   };
 
-  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); setMapPin(null); };
-  const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); };
-  const goDetail = b =>{ setDetail(b);      setPage("detail"); };
-  const goBack   = ()=>{ setPage("region"); setDetail(null); };
-  const goMap    = ()=>{ setPage("map");    setDetail(null); setRegion(null); };
+  const scrollTop = () => window.scrollTo({top:0, behavior:"instant"});
+
+  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); setMapPin(null); scrollTop(); };
+  const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); scrollTop(); };
+  const goDetail = b =>{ setDetail(b);      setPage("detail"); scrollTop(); };
+  const goBack   = ()=>{ setPage("region"); setDetail(null); scrollTop(); };
+  const goMap    = ()=>{ setPage("map");    setDetail(null); setRegion(null); scrollTop(); };
 
   // ── MapLibre Implementation (Free, no API key needed) ──────
   const CAT_COLORS = {
@@ -552,7 +554,14 @@ export default function App() {
     const url = item.maps
       ? item.maps
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name+' '+item.area+' Crete Greece')}`;
-    window.open(url,"_blank");
+    // Use location.href for iOS Safari compatibility — prevents blank page on return
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const Card = ({b}) => {
@@ -889,7 +898,7 @@ export default function App() {
             {id:"home",    icon:"🏠",label:"Home",    action:goHome},
             {id:"map",     icon:"🗺", label:"Map",     action:goMap},
             {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
-            {id:"info",    icon:"ℹ️", label:"Info",    action:()=>setPage("info")},
+            {id:"info",    icon:"ℹ️", label:"Info",    action:()=>{ setPage("info"); scrollTop(); }},
             {id:"refresh", icon:"↻", label:"Refresh", action:fetchContent},
           ].map(n=>(
             <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
