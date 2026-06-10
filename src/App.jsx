@@ -78,6 +78,26 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   box-shadow:0 4px 20px rgba(196,165,90,0.35);}
 .gate-buy-btn:active{opacity:0.85;}
 .gate-buy-sub{font-size:11px;color:var(--stone);text-align:center;margin-top:8px;}
+.gate-preview{width:100%;max-width:340px;margin:24px 0 0;}
+.gate-preview-title{font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--stone);text-align:center;margin-bottom:14px;}
+.gate-screens{display:flex;gap:10px;justify-content:center;}
+.gate-screen{flex:1;max-width:150px;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);
+  box-shadow:0 4px 20px rgba(18,18,20,0.1);background:var(--ink);}
+.gate-screen-header{background:var(--ink);padding:8px 10px;display:flex;align-items:center;justify-content:space-between;}
+.gate-screen-logo{font-size:10px;color:var(--gold);font-style:italic;font-weight:600;}
+.gate-screen-body{background:var(--ivory);}
+.gate-screen-hero{height:72px;background:linear-gradient(135deg,#0A1E28,#1D5A6B);display:flex;align-items:flex-end;padding:8px;}
+.gate-screen-hero-text{font-size:11px;color:var(--white);font-style:italic;opacity:0.9;}
+.gate-screen-section{padding:8px;}
+.gate-screen-label{font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin-bottom:6px;}
+.gate-screen-card{background:var(--white);border-radius:6px;padding:6px 8px;margin-bottom:5px;display:flex;align-items:center;gap:6px;border:1px solid var(--sand);}
+.gate-screen-card-img{width:24px;height:24px;border-radius:5px;font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--cream);}
+.gate-screen-card-name{font-size:8px;font-weight:500;color:var(--ink);}
+.gate-screen-card-sub{font-size:7px;color:var(--stone);}
+.gate-screen-map{height:90px;background:linear-gradient(160deg,#b8d8e8,#c8e4d8);position:relative;overflow:hidden;}
+.gate-screen-pin{position:absolute;display:flex;flex-direction:column;align-items:center;}
+.gate-screen-pin-bubble{background:#1D7A9E;color:white;font-size:7px;padding:2px 6px;border-radius:8px;font-weight:600;white-space:nowrap;}
+.gate-screen-pin-tail{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid #1D7A9E;}
 .gate-spinner{width:20px;height:20px;border:2px solid rgba(196,165,90,0.3);border-top-color:var(--gold);
   border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -640,6 +660,81 @@ export default function App() {
             <span>✦</span> Get Access — Buy Now
           </button>
           <div className="gate-buy-sub">One payment · Lifetime access · Instant delivery</div>
+
+          {/* App preview */}
+          <div className="gate-preview">
+            <div className="gate-preview-title">✦ Inside the guide</div>
+            <div className="gate-screens">
+
+              {/* Screen 1 — Region listing */}
+              <div className="gate-screen">
+                <div className="gate-screen-header">
+                  <span className="gate-screen-logo">My</span>
+                  <span style={{fontSize:8,color:"var(--stone)",letterSpacing:"0.1em"}}>GREECE</span>
+                </div>
+                <div className="gate-screen-body">
+                  <div className="gate-screen-hero">
+                    <div className="gate-screen-hero-text">Chania,<br/>Curated.</div>
+                  </div>
+                  <div className="gate-screen-section">
+                    <div className="gate-screen-label">🌊 Beaches</div>
+                    {[
+                      {e:"🏖",n:"Balos Lagoon",s:"Gramvousa"},
+                      {e:"🌸",n:"Elafonissi",s:"Southwest"},
+                      {e:"🪸",n:"Seitan Limania",s:"Akrotiri"},
+                    ].map((c,i)=>(
+                      <div key={i} className="gate-screen-card">
+                        <div className="gate-screen-card-img">{c.e}</div>
+                        <div><div className="gate-screen-card-name">{c.n}</div><div className="gate-screen-card-sub">📍 {c.s}</div></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Screen 2 — Map view */}
+              <div className="gate-screen">
+                <div className="gate-screen-header">
+                  <span className="gate-screen-logo">My</span>
+                  <span style={{fontSize:8,color:"var(--stone)",letterSpacing:"0.1em"}}>GREECE</span>
+                </div>
+                <div className="gate-screen-body">
+                  <div className="gate-screen-map">
+                    {/* Fake crete shape */}
+                    <div style={{position:"absolute",bottom:20,left:10,right:10,height:40,background:"rgba(240,235,220,0.8)",borderRadius:20}}/>
+                    <div className="gate-screen-pin" style={{top:18,left:28}}>
+                      <div className="gate-screen-pin-bubble">🌊 Balos</div>
+                      <div className="gate-screen-pin-tail"/>
+                    </div>
+                    <div className="gate-screen-pin" style={{top:30,left:70}}>
+                      <div className="gate-screen-pin-bubble" style={{background:"#1A7A4A"}}>🧗 Samaria</div>
+                      <div className="gate-screen-pin-tail" style={{borderTopColor:"#1A7A4A"}}/>
+                    </div>
+                    <div className="gate-screen-pin" style={{top:22,right:14}}>
+                      <div className="gate-screen-pin-bubble" style={{background:"#6B2D8B"}}>🏡 Hotel</div>
+                      <div className="gate-screen-pin-tail" style={{borderTopColor:"#6B2D8B"}}/>
+                    </div>
+                  </div>
+                  <div className="gate-screen-section">
+                    <div className="gate-screen-label">🗺 Interactive Map</div>
+                    <div className="gate-screen-card">
+                      <div className="gate-screen-card-img">🌊</div>
+                      <div>
+                        <div className="gate-screen-card-name">Falassarna Beach</div>
+                        <div className="gate-screen-card-sub">📍 Kissamos, Chania</div>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",gap:4,marginTop:4}}>
+                      {["Beaches","Food","Stay"].map((t,i)=>(
+                        <div key={i} style={{background:i===0?"var(--ink)":"var(--sand)",color:i===0?"var(--gold)":"var(--stone)",borderRadius:8,padding:"2px 5px",fontSize:7,fontWeight:600}}>{t}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </>
     );
@@ -819,7 +914,12 @@ export default function App() {
                 setDetail(mapPin);
                 setPage("detail");
                 setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);
-              }}>→</div>
+              }} style={{background:"#18181A",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12H19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M12 5L19 12L12 19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
             </div>
           )}
         </div>
