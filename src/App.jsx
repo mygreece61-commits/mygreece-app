@@ -783,14 +783,7 @@ export default function App() {
 
           {/* Map container */}
           <div className="map-container">
-            {!import.meta.env.VITE_GOOGLE_MAPS_KEY ? (
-              <div className="map-loading">
-                <div style={{fontSize:40}}>🗺</div>
-                <div style={{fontSize:13,color:"var(--stone)"}}>API key not found</div>
-              </div>
-            ) : (
-              <div ref={mapRef} className="map-div"/>
-            )}
+            <div ref={mapRef} className="map-div"/>
           </div>
 
           {/* Place card popup */}
