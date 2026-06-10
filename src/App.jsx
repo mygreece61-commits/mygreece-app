@@ -390,134 +390,155 @@ export default function App() {
   const goBack   = ()=>{ setPage("region"); setDetail(null); };
   const goMap    = ()=>{ setPage("map");    setDetail(null); setRegion(null); };
 
-  // Category colors for map pins
+  // ── MapLibre Implementation (Free, no API key needed) ──────
   const CAT_COLORS = {
-    Beach: "#1D7A9E", Restaurant: "#7A5C1E",
-    Activity: "#1A7A4A", Hotel: "#4A1D7A", Village: "#9E4A1D",
+    Beach: "#1D7A9E", Restaurant: "#8B6914",
+    Activity: "#1A7A4A", Hotel: "#6B2D8B", Village: "#9E4A1D",
   };
 
-  // Init Google Map — robust version that survives re-renders
-  const initMap = useCallback(() => {
-    if (!mapRef.current) return;
-    const GKEY = import.meta.env.VITE_GOOGLE_MAPS_KEY;
-    if (!GKEY) return;
+  const loadMapLibre = useCallback(() => {
+    if (!mapRef.current || gMapRef.current) return;
 
-    // If map already exists, just re-attach and re-add markers
-    if (gMapRef.current) {
-      // Re-trigger resize in case container changed
-      window.google.maps.event.trigger(gMapRef.current, "resize");
-      addMarkers(gMapRef.current, mapFilter);
-      return;
+    // Load MapLibre CSS + JS if not already loaded
+    if (!document.getElementById("maplibre-css")) {
+      const link = document.createElement("link");
+      link.id   = "maplibre-css";
+      link.rel  = "stylesheet";
+      link.href = "https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css";
+      document.head.appendChild(link);
     }
 
-    if (window.google && window.google.maps) {
-      createMap();
-      return;
-    }
-
-    // Check if script already loading
-    if (document.getElementById("gmaps-script")) return;
-
-    const script = document.createElement("script");
-    script.id = "gmaps-script";
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${GKEY}`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => createMap();
-    document.head.appendChild(script);
+    const loadLib = () => {
+      if (window.maplibregl) { initMapLibre(); return; }
+      if (document.getElementById("maplibre-js")) return;
+      const script = document.createElement("script");
+      script.id  = "maplibre-js";
+      script.src = "https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js";
+      script.onload = () => initMapLibre();
+      document.head.appendChild(script);
+    };
+    loadLib();
   }, [items, mapFilter]);
 
-  const createMap = () => {
-    if (!mapRef.current) return;
-    const map = new window.google.maps.Map(mapRef.current, {
-      center: { lat: 35.2401, lng: 24.8093 },
-      zoom: 9,
-      mapTypeId: "roadmap",
-      disableDefaultUI: true,
-      zoomControl: true,
-      styles: [
-        { featureType:"water", stylers:[{color:"#a8d4e6"}] },
-        { featureType:"landscape", stylers:[{color:"#f2ede3"}] },
-        { featureType:"road", stylers:[{color:"#ffffff"}] },
-        { featureType:"poi", stylers:[{visibility:"off"}] },
-        { featureType:"transit", stylers:[{visibility:"off"}] },
-        { elementType:"labels.text.fill", stylers:[{color:"#18181A"}] },
-      ],
+  const initMapLibre = () => {
+    if (!mapRef.current || gMapRef.current) return;
+    const ml = window.maplibregl;
+
+    const map = new ml.Map({
+      container: mapRef.current,
+      style: {
+        version: 8,
+        sources: {
+          "osm": {
+            type: "raster",
+            tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+            tileSize: 256,
+            attribution: "© OpenStreetMap contributors",
+          }
+        },
+        layers: [{
+          id: "osm-tiles",
+          type: "raster",
+          source: "osm",
+          paint: {
+            "raster-saturation": -0.3,
+            "raster-brightness-min": 0.05,
+            "raster-contrast": 0.1,
+            "raster-opacity": 0.85,
+          }
+        }],
+        glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
+      },
+      center: [24.8093, 35.2401],
+      zoom: 8.5,
+      minZoom: 7,
+      maxZoom: 16,
+      maxBounds: [[22.0, 34.2], [27.5, 36.8]],
     });
+
+    // Add zoom controls
+    map.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
+
     gMapRef.current = map;
-    addMarkers(map, "all");
+
+    map.on("load", () => {
+      addMapLibreMarkers(map, mapFilter);
+    });
   };
 
-  const addMarkers = (map, filter) => {
-    // Clear existing markers
-    markersRef.current.forEach(m => m.setMap(null));
+  const addMapLibreMarkers = (map, filter) => {
+    // Remove existing markers
+    markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
-    const toShow = filter === "all" ? items : items.filter(i => i.category === filter);
+    const toShow = filter === "all"
+      ? items.filter(i => i.lat && i.lng)
+      : items.filter(i => i.category === filter && i.lat && i.lng);
 
     toShow.forEach(item => {
-      if (!item.maps) return;
-      // Extract lat/lng from Google Maps URL
-      const coords = extractCoords(item.maps);
-      if (!coords) return;
-
       const color = CAT_COLORS[item.category] || "#C4A55A";
-      const marker = new window.google.maps.Marker({
-        position: coords,
-        map,
-        title: item.name,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: color,
-          fillOpacity: 1,
-          strokeColor: "#ffffff",
-          strokeWeight: 2,
-        },
-      });
+      const cat   = getCat(item.category);
 
-      // Info label
-      const label = new window.google.maps.InfoWindow({
-        content: `<div style="font-family:Jost,sans-serif;font-size:12px;font-weight:500;color:#18181A;padding:2px 4px;">${item.name}</div>`,
-        disableAutoPan: true,
-      });
+      // Custom bubble marker element
+      const el = document.createElement("div");
+      el.style.cssText = "display:flex;flex-direction:column;align-items:center;cursor:pointer;";
+      el.innerHTML = `
+        <div style="
+          display:flex;align-items:center;gap:4px;
+          background:${color};color:white;
+          padding:5px 11px;border-radius:20px;
+          font-family:'Jost',sans-serif;font-size:11px;font-weight:600;
+          white-space:nowrap;letter-spacing:0.02em;
+          box-shadow:0 3px 10px rgba(0,0,0,0.3);
+          transition:transform 0.15s;
+        ">${cat.icon} ${item.name}</div>
+        <div style="
+          width:0;height:0;
+          border-left:5px solid transparent;
+          border-right:5px solid transparent;
+          border-top:7px solid ${color};
+        "></div>
+      `;
 
-      marker.addListener("click", () => {
+      el.addEventListener("mouseenter", () => {
+        el.querySelector("div").style.transform = "scale(1.08)";
+      });
+      el.addEventListener("mouseleave", () => {
+        el.querySelector("div").style.transform = "scale(1)";
+      });
+      el.addEventListener("click", () => {
         setMapPin(item);
-        map.panTo(coords);
+        gMapRef.current.flyTo({
+          center: [parseFloat(item.lng), parseFloat(item.lat)],
+          zoom: Math.max(gMapRef.current.getZoom(), 11),
+          duration: 600,
+        });
       });
+
+      const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" })
+        .setLngLat([parseFloat(item.lng), parseFloat(item.lat)])
+        .addTo(map);
 
       markersRef.current.push(marker);
     });
   };
 
-  const extractCoords = (url) => {
-    if (!url) return null;
-    // Try @lat,lng format
-    const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (atMatch) return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
-    // Try ?q=lat,lng format
-    const qMatch = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (qMatch) return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
-    // Try ll=lat,lng
-    const llMatch = url.match(/ll=(-?\d+\.\d+),(-?\d+\.\d+)/);
-    if (llMatch) return { lat: parseFloat(llMatch[1]), lng: parseFloat(llMatch[2]) };
-    return null;
-  };
-
-  // Load map when page becomes "map"
+  // Load MapLibre when map page opens
   useEffect(() => {
     if (page === "map") {
-      // Small delay to ensure DOM is ready
-      const timer = setTimeout(() => initMap(), 150);
+      const timer = setTimeout(() => loadMapLibre(), 150);
       return () => clearTimeout(timer);
     }
   }, [page, items]);
 
-  // Filter markers when mapFilter changes
+  // Re-filter markers when filter changes
   useEffect(() => {
-    if (gMapRef.current) addMarkers(gMapRef.current, mapFilter);
-  }, [mapFilter]);
+    if (gMapRef.current && window.maplibregl) {
+      if (gMapRef.current.loaded()) {
+        addMapLibreMarkers(gMapRef.current, mapFilter);
+      }
+    }
+  }, [mapFilter, items]);
 
   const forRegion = (area,cat) => items.filter(i=>i.area===area&&i.category===cat);
   const rGrad = r=>`linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
@@ -740,63 +761,61 @@ export default function App() {
           );
         })()}
 
-        {/* MAP PAGE */}
-        {page==="map" && (
-          <div className="map-page">
-            {/* Filters */}
-            <div className="map-filters">
-              {[
-                {id:"all",      label:"All",        icon:"🗺"},
-                {id:"Beach",    label:"Beaches",    icon:"🌊"},
-                {id:"Restaurant",label:"Food",      icon:"🫒"},
-                {id:"Hotel",    label:"Stay",       icon:"🏡"},
-                {id:"Activity", label:"Activities", icon:"🧗"},
-                {id:"Village",  label:"Villages",   icon:"⛪"},
-              ].map(f=>(
-                <div key={f.id}
-                  className={`map-chip ${mapFilter===f.id?"on":""}`}
-                  onClick={()=>setMapFilter(f.id)}>
-                  <span>{f.icon}</span>{f.label}
-                </div>
-              ))}
-            </div>
-
-            {/* Map container */}
-            <div className="map-container">
-              {!import.meta.env.VITE_GOOGLE_MAPS_KEY ? (
-                <div className="map-loading">
-                  <div style={{fontSize:40}}>🗺</div>
-                  <div style={{fontSize:13,color:"var(--stone)"}}>Google Maps API key not found</div>
-                </div>
-              ) : (
-                <div ref={mapRef} className="map-div"/>
-              )}
-            </div>
-
-            {/* Place card popup */}
-            {mapPin && (
-              <div className="map-card">
-                <div className="map-card-img">
-                  {mapPin.image
-                    ? <img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>
-                    : mapPin.emoji || getCat(mapPin.category).icon}
-                </div>
-                <div className="map-card-info">
-                  <div className="map-card-name">{mapPin.name}</div>
-                  <div className="map-card-meta">📍 {mapPin.subarea}, {mapPin.area}</div>
-                  <div className="map-card-tags">
-                    {mapPin.tags.slice(0,3).map((t,i)=><span key={i} className="map-card-tag">{t}</span>)}
-                  </div>
-                </div>
-                <div className="map-card-arrow" onClick={()=>{
-                  setDetail(mapPin);
-                  setPage("detail");
-                  setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);
-                }}>→</div>
+        {/* MAP PAGE — always rendered, hidden when not active to preserve map state */}
+        <div style={{display: page==="map" ? "block" : "none"}} className="map-page">
+          {/* Filters */}
+          <div className="map-filters">
+            {[
+              {id:"all",       label:"All",        icon:"🗺"},
+              {id:"Beach",     label:"Beaches",    icon:"🌊"},
+              {id:"Restaurant",label:"Food",       icon:"🫒"},
+              {id:"Hotel",     label:"Stay",       icon:"🏡"},
+              {id:"Activity",  label:"Activities", icon:"🧗"},
+              {id:"Village",   label:"Villages",   icon:"⛪"},
+            ].map(f=>(
+              <div key={f.id}
+                className={`map-chip ${mapFilter===f.id?"on":""}`}
+                onClick={()=>setMapFilter(f.id)}>
+                <span>{f.icon}</span>{f.label}
               </div>
+            ))}
+          </div>
+
+          {/* Map container */}
+          <div className="map-container">
+            {!import.meta.env.VITE_GOOGLE_MAPS_KEY ? (
+              <div className="map-loading">
+                <div style={{fontSize:40}}>🗺</div>
+                <div style={{fontSize:13,color:"var(--stone)"}}>API key not found</div>
+              </div>
+            ) : (
+              <div ref={mapRef} className="map-div"/>
             )}
           </div>
-        )}
+
+          {/* Place card popup */}
+          {mapPin && page==="map" && (
+            <div className="map-card">
+              <div className="map-card-img">
+                {mapPin.image
+                  ? <img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>
+                  : <span style={{fontSize:24}}>{mapPin.emoji || getCat(mapPin.category).icon}</span>}
+              </div>
+              <div className="map-card-info">
+                <div className="map-card-name">{mapPin.name}</div>
+                <div className="map-card-meta">📍 {mapPin.subarea}, {mapPin.area}</div>
+                <div className="map-card-tags">
+                  {mapPin.tags.slice(0,3).map((t,i)=><span key={i} className="map-card-tag">{t}</span>)}
+                </div>
+              </div>
+              <div className="map-card-arrow" onClick={()=>{
+                setDetail(mapPin);
+                setPage("detail");
+                setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);
+              }}>→</div>
+            </div>
+          )}
+        </div>
 
         {/* INFO PAGE */}
         {page==="info" && (
