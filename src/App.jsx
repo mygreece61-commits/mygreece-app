@@ -227,8 +227,10 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .map-card-meta{font-size:11px;color:var(--stone);margin-bottom:6px;}
 .map-card-tags{display:flex;gap:5px;flex-wrap:wrap;}
 .map-card-tag{background:var(--cream);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--stone);}
-.map-card-arrow{width:36px;height:36px;border-radius:50%;background:var(--ink);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;}
+.map-card-arrow{width:38px;height:38px;border-radius:50%;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;
+  transition:transform 0.18s;}
+.map-card-arrow:active{transform:scale(0.92);}
 .map-loading{position:absolute;inset:0;top:100px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:12px;background:var(--cream);}
 
