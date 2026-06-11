@@ -354,9 +354,28 @@ export default function App() {
     return id;
   };
 
-  // Track login silently
+  // Track login — get real country from browser-side IP lookup
   const trackLogin = async (code) => {
     try {
+      // Step 1: Get real IP + country from free API (called directly from browser)
+      let country = "unknown";
+      let ip = "unknown";
+      try {
+        const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
+        const geoData = await geo.json();
+        country = geoData.country_name || geoData.country || "unknown";
+        ip      = geoData.ip || "unknown";
+      } catch(e) {
+        // Fallback — try alternative
+        try {
+          const geo2 = await fetch("https://ip-api.com/json/?fields=country,query", { signal: AbortSignal.timeout(3000) });
+          const geoData2 = await geo2.json();
+          country = geoData2.country || "unknown";
+          ip      = geoData2.query  || "unknown";
+        } catch(e2) { /* silent */ }
+      }
+
+      // Step 2: Send to proxy with real location data
       await fetch(`${PROXY}?action=track`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -364,6 +383,8 @@ export default function App() {
           code,
           deviceId:  getDeviceId(),
           userAgent: navigator.userAgent,
+          country,
+          ip,
         }),
       });
     } catch(e) { console.warn("Tracking failed:", e); }
@@ -391,6 +412,7 @@ export default function App() {
       if (data.success) {
         localStorage.setItem("mg_code", code.trim().toUpperCase());
         setAccess(true);
+        // Track EVERY login — both manual code entry and auto-login from stored code
         trackLogin(code.trim().toUpperCase());
         fetchContent();
       } else {
