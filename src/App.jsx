@@ -221,6 +221,15 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .dp-tip:last-child{margin-bottom:0;}
 .dp-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:6px;flex-shrink:0;}
 .dp-tip-text{font-size:13px;font-weight:300;line-height:1.6;color:var(--ink);}
+/* CONTACT INFO SECTION */
+.dp-contact{background:var(--white);border-radius:16px;padding:18px;margin-bottom:24px;border:1px solid var(--sand);}
+.dp-contact-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.dp-contact-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream);cursor:pointer;text-decoration:none;}
+.dp-contact-item:last-child{border-bottom:none;padding-bottom:0;}
+.dp-contact-icon{width:36px;height:36px;border-radius:10px;background:var(--cream);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.dp-contact-label{font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin-bottom:2px;}
+.dp-contact-value{font-size:13px;font-weight:400;color:var(--ink);}
+
 .maps-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
   padding:17px;border-radius:16px;background:var(--ink);border:none;cursor:pointer;
   font-family:'Jost',sans-serif;font-size:13px;font-weight:600;letter-spacing:0.1em;
@@ -230,6 +239,15 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   padding:14px;border-radius:16px;background:var(--white);border:1.5px solid var(--sand);cursor:pointer;
   font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;
   text-transform:uppercase;color:var(--stone);margin-bottom:12px;}
+.booking-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  padding:17px;border-radius:16px;
+  background:linear-gradient(135deg,#003580 0%,#0066CC 100%);
+  border:none;cursor:pointer;
+  font-family:'Jost',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;color:#ffffff;margin-bottom:12px;
+  box-shadow:0 4px 20px rgba(0,53,128,0.3);transition:opacity 0.2s;}
+.booking-btn:active{opacity:0.85;}
+.booking-btn-sub{font-size:10px;color:rgba(255,255,255,0.7);font-weight:400;letter-spacing:0.06em;text-transform:none;display:block;margin-top:2px;}
 .gyg-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
   padding:17px;border-radius:16px;
   background:linear-gradient(135deg,#C4A55A 0%,#E8D8AC 50%,#C4A55A 100%);
@@ -856,12 +874,63 @@ export default function App() {
                   <div className="dp-info-card"><div className="dp-info-icon">📍</div><div className="dp-info-label">Area</div><div className="dp-info-value">{detail.area}</div></div>
                   <div className="dp-info-card"><div className="dp-info-icon">{cat.icon}</div><div className="dp-info-label">Type</div><div className="dp-info-value">{detail.category}</div></div>
                 </div>
-                <div className="dp-tips">
-                  <div className="dp-tips-title">✦ Visitor Tips</div>
-                  {tips.map((tip,i)=>(
-                    <div key={i} className="dp-tip"><div className="dp-tip-dot"/><div className="dp-tip-text">{tip}</div></div>
-                  ))}
-                </div>
+                {/* Show Visitor Tips for beaches, activities, villages */}
+                {["Beach","Activity","Village"].includes(detail.category) && (
+                  <div className="dp-tips">
+                    <div className="dp-tips-title">✦ Visitor Tips</div>
+                    {tips.map((tip,i)=>(
+                      <div key={i} className="dp-tip"><div className="dp-tip-dot"/><div className="dp-tip-text">{tip}</div></div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Show Contact Info for hotels & restaurants */}
+                {["Hotel","Restaurant"].includes(detail.category) && (
+                  <div className="dp-contact">
+                    <div className="dp-contact-title">📋 Contact & Info</div>
+
+                    {detail.phone && (
+                      <a className="dp-contact-item" href={`tel:${detail.phone}`}>
+                        <div className="dp-contact-icon">📞</div>
+                        <div><div className="dp-contact-label">Phone</div><div className="dp-contact-value">{detail.phone}</div></div>
+                      </a>
+                    )}
+
+                    {detail.email && (
+                      <a className="dp-contact-item" href={`mailto:${detail.email}`}>
+                        <div className="dp-contact-icon">✉️</div>
+                        <div><div className="dp-contact-label">Email</div><div className="dp-contact-value">{detail.email}</div></div>
+                      </a>
+                    )}
+
+                    {detail.website && (
+                      <a className="dp-contact-item" href={detail.website} target="_blank" rel="noopener noreferrer">
+                        <div className="dp-contact-icon">🌐</div>
+                        <div><div className="dp-contact-label">Website</div><div className="dp-contact-value">{detail.website.replace(/https?:\/\/(www\.)?/,"")}</div></div>
+                      </a>
+                    )}
+
+                    {detail.instagram && (
+                      <a className="dp-contact-item" href={`https://instagram.com/${detail.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer">
+                        <div className="dp-contact-icon">📸</div>
+                        <div><div className="dp-contact-label">Instagram</div><div className="dp-contact-value">{detail.instagram.startsWith("@")?detail.instagram:`@${detail.instagram}`}</div></div>
+                      </a>
+                    )}
+
+                    {detail.hours && (
+                      <div className="dp-contact-item" style={{cursor:"default"}}>
+                        <div className="dp-contact-icon">⏰</div>
+                        <div><div className="dp-contact-label">Hours</div><div className="dp-contact-value">{detail.hours}</div></div>
+                      </div>
+                    )}
+
+                    {!detail.phone && !detail.email && !detail.website && !detail.instagram && !detail.hours && (
+                      <div style={{fontSize:13,color:"var(--stone)",fontWeight:300}}>
+                        Add contact details in Notion to show them here.
+                      </div>
+                    )}
+                  </div>
+                )}
                 <button className="maps-btn" onClick={()=>openMaps(detail)}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   {detail.maps?"Open Exact Location in Maps":"Search in Google Maps"}
@@ -877,6 +946,21 @@ export default function App() {
                     <span>
                       Book This Activity
                       <span className="gyg-btn-sub">via GetYourGuide · Best Price Guaranteed</span>
+                    </span>
+                  </button>
+                )}
+
+                {/* Booking.com button — only for Hotels with a booking link */}
+                {detail.category === "Hotel" && detail.booking && (
+                  <button className="booking-btn" onClick={()=>{
+                    const a=document.createElement("a");
+                    a.href=detail.booking;a.target="_blank";a.rel="noopener noreferrer";
+                    document.body.appendChild(a);a.click();document.body.removeChild(a);
+                  }}>
+                    <span>🏨</span>
+                    <span>
+                      Book on Booking.com
+                      <span className="booking-btn-sub">Best price · Free cancellation available</span>
                     </span>
                   </button>
                 )}
