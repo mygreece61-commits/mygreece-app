@@ -488,6 +488,54 @@ export default function App() {
     setDetail(null);
   };
 
+  // ── 3-minute session guard + background re-check ──────────────
+  useEffect(()=>{
+    if (!access) return;
+
+    const checkSession = async () => {
+      const stored = localStorage.getItem("mg_code");
+      if (!stored) {
+        setAccess(false);
+        setPage("home");
+        return;
+      }
+      try {
+        const res  = await fetch(`${PROXY}?action=verify&code=${encodeURIComponent(stored)}`);
+        const data = await res.json();
+        if (!data.success) {
+          // Code deleted or revoked — logout immediately
+          localStorage.removeItem("mg_code");
+          setAccess(false);
+          setPage("home");
+          setRegion(null);
+          setDetail(null);
+          setMapPin(null);
+        }
+      } catch(e) {
+        // Network error — do NOT logout, try again next interval
+        console.warn("Session check failed — will retry in 3 min");
+      }
+    };
+
+    // Poll every 3 minutes
+    const interval = setInterval(checkSession, 3 * 60 * 1000);
+
+    // Re-check when app returns from background (visibility change)
+    const onVisible = () => {
+      if (document.visibilityState === "visible") checkSession();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    // Re-check when window gets focus (desktop/iPad)
+    window.addEventListener("focus", checkSession);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", checkSession);
+    };
+  }, [access]);
+
   const fetchContent = async () => {
     setLoading(true); setError(null);
     try {
