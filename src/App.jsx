@@ -408,17 +408,47 @@ export default function App() {
     } catch(e) { console.warn("Tracking failed:", e); }
   };
 
-  // On mount: check URL param or localStorage
+  // On mount: ALWAYS verify against server — never trust localStorage alone
   useEffect(()=>{
     const stored  = localStorage.getItem("mg_code");
     const urlCode = getUrlCode();
     const toCheck = urlCode || stored;
     if (toCheck) {
-      verifyCode(toCheck, true);
+      verifyOnMount(toCheck);
     } else {
       setChecking(false);
     }
   },[]);
+
+  // Mount verification — always checks server, forces logout if code deleted/invalid
+  const verifyOnMount = async (code) => {
+    try {
+      const url = `${PROXY}?action=verify&code=${encodeURIComponent(code.trim().toUpperCase())}`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("mg_code", code.trim().toUpperCase());
+        setAccess(true);
+        trackLogin(code.trim().toUpperCase());
+        fetchContent();
+      } else {
+        // Code is invalid or deleted — force logout immediately
+        localStorage.removeItem("mg_code");
+        setAccess(false);
+        setPage("home");
+      }
+    } catch(e) {
+      // Network error — allow access if code was previously valid
+      // This prevents locking out users with bad connection
+      const stored = localStorage.getItem("mg_code");
+      if (stored) {
+        setAccess(true);
+        fetchContent();
+      }
+    } finally {
+      setChecking(false);
+    }
+  };
 
   const verifyCode = async (code, silent=false) => {
     if (!silent) setCodeLoading(true);
@@ -430,12 +460,12 @@ export default function App() {
       if (data.success) {
         localStorage.setItem("mg_code", code.trim().toUpperCase());
         setAccess(true);
-        // Track EVERY login — both manual code entry and auto-login from stored code
         trackLogin(code.trim().toUpperCase());
         fetchContent();
       } else {
         if (!silent) setCodeError("Invalid code. Please check and try again.");
         localStorage.removeItem("mg_code");
+        setAccess(false);
       }
     } catch(e) {
       if (!silent) setCodeError("Connection error. Please try again.");
@@ -924,7 +954,16 @@ export default function App() {
                       </div>
                     )}
 
-                    {!detail.phone && !detail.email && !detail.website && !detail.instagram && !detail.hours && (
+                    {detail.address && (
+                      <a className="dp-contact-item"
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(detail.address)}`}
+                        target="_blank" rel="noopener noreferrer">
+                        <div className="dp-contact-icon">📍</div>
+                        <div><div className="dp-contact-label">Address</div><div className="dp-contact-value">{detail.address}</div></div>
+                      </a>
+                    )}
+
+                    {!detail.phone && !detail.email && !detail.website && !detail.instagram && !detail.hours && !detail.address && (
                       <div style={{fontSize:13,color:"var(--stone)",fontWeight:300}}>
                         Add contact details in Notion to show them here.
                       </div>
