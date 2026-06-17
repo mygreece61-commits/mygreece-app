@@ -332,21 +332,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni-i{font-size:20px;}
 .bni-l{font-size:9px;font-weight:500;letter-spacing:0.08em;color:var(--stone);text-transform:uppercase;}
 .bni.on .bni-l{color:var(--gold);}
-
-/* Force-lock visual portrait — counter-rotates the whole page so it
-   never visually appears to rotate, regardless of physical phone orientation */
-@media screen and (orientation: landscape) and (max-width: 900px) {
-  html {
-    transform: rotate(-90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
-  }
-}
 `;
 
 const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
