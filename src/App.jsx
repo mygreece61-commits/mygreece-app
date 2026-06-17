@@ -333,22 +333,18 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni-l{font-size:9px;font-weight:500;letter-spacing:0.08em;color:var(--stone);text-transform:uppercase;}
 .bni.on .bni-l{color:var(--gold);}
 
-/* Block landscape mode on phones — encourage portrait */
-@media (orientation: landscape) and (max-width: 900px) {
-  .app::before {
-    content: "Please rotate your phone back to portrait 🙏";
-    position: fixed;
-    inset: 0;
-    z-index: 99999;
-    background: var(--ink);
-    color: var(--ivory);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 2rem;
-    font-family: 'Jost', sans-serif;
-    font-size: 1.2rem;
+/* Force-lock visual portrait — counter-rotates the whole page so it
+   never visually appears to rotate, regardless of physical phone orientation */
+@media screen and (orientation: landscape) and (max-width: 900px) {
+  html {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
   }
 }
 `;
