@@ -815,7 +815,7 @@ export default function App() {
             <div className="gate-divider-line"/>
           </div>
 
-          <button className="gate-buy-btn" onClick={()=>window.open("https://buy.stripe.com/bJe00cd2qdis4zA2lK8ww00","_blank")}>
+          <button className="gate-buy-btn" onClick={()=>window.open("https://buy.stripe.com/8x28wIaUi7Y86HI0dC8ww02","_blank")}>
             <span>✦</span> Get Access — Buy Now
           </button>
           <div className="gate-buy-sub">One payment · Lifetime access · Instant delivery</div>
