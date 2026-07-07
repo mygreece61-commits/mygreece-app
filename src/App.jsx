@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const PROXY      = "https://mygreece-proxy.vercel.app/api/notion";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzptpWWo0eF9JG1SLFHNpYxQHp7AoajGZlRfmOryQD703r_RO0RekR0vIXPCx3MV_XW/exec";
-const SECRET_KEY = "mygreece2024secret"; // ← change this to match your Apps Script
+const PROXY = "https://mygreece-proxy.vercel.app/api/notion";
+const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
   { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", emoji:"⛵" },
@@ -42,77 +41,6 @@ const css = `
 }
 body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-webkit-font-smoothing:antialiased;}
 .app{min-height:100vh;max-width:430px;margin:0 auto;background:var(--ivory);overflow-x:hidden;position:relative;}
-
-/* ── GATE PAGE ── */
-.gate{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:var(--ivory);}
-.gate-logo{display:flex;align-items:baseline;gap:1px;margin-bottom:40px;}
-.gate-my{font-family:'Playfair Display',serif;font-size:32px;font-weight:400;font-style:italic;color:var(--gold);}
-.gate-gr{font-family:'Jost',sans-serif;font-size:22px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink);}
-.gate-hero{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#0A1E28,#1D5A6B);
-  display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:28px;
-  box-shadow:0 8px 32px rgba(29,77,94,0.3);}
-.gate-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;text-align:center;margin-bottom:8px;line-height:1.2;}
-.gate-sub{font-size:13px;font-weight:300;color:var(--stone);text-align:center;line-height:1.6;margin-bottom:36px;}
-.gate-input-wrap{width:100%;max-width:340px;position:relative;margin-bottom:14px;}
-.gate-input{width:100%;padding:16px 20px;border:2px solid var(--sand);border-radius:14px;
-  font-family:'Jost',sans-serif;font-size:15px;font-weight:500;letter-spacing:0.08em;
-  color:var(--ink);background:var(--white);outline:none;transition:border 0.2s;text-align:center;text-transform:uppercase;}
-.gate-input:focus{border-color:var(--gold);}
-.gate-input::placeholder{letter-spacing:0.06em;font-weight:300;text-transform:none;color:var(--stone);}
-.gate-btn{width:100%;max-width:340px;padding:16px;border-radius:14px;background:var(--ink);
-  color:var(--gold);font-family:'Jost',sans-serif;font-size:13px;font-weight:600;
-  letter-spacing:0.12em;text-transform:uppercase;border:none;cursor:pointer;transition:opacity 0.2s;margin-bottom:16px;}
-.gate-btn:active{opacity:0.82;}
-.gate-btn:disabled{opacity:0.5;cursor:not-allowed;}
-.gate-error{font-size:12px;color:#cc4444;text-align:center;margin-bottom:8px;min-height:18px;}
-.gate-success{font-size:12px;color:#2d8a4e;text-align:center;margin-bottom:8px;}
-.gate-footer{font-size:11px;color:var(--stone);text-align:center;line-height:1.6;margin-top:8px;}
-.gate-divider{display:flex;align-items:center;gap:12px;width:100%;max-width:340px;margin:20px 0;}
-.gate-divider-line{flex:1;height:1px;background:var(--sand);}
-.gate-divider-text{font-size:11px;color:var(--stone);letter-spacing:0.08em;text-transform:uppercase;}
-.gate-buy-btn{width:100%;max-width:340px;padding:16px;border-radius:14px;
-  background:linear-gradient(135deg,#C4A55A,#E8D8AC);
-  color:var(--ink);font-family:'Jost',sans-serif;font-size:13px;font-weight:700;
-  letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;
-  transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:0 4px 20px rgba(196,165,90,0.35);}
-.gate-buy-btn:active{opacity:0.85;}
-.gate-buy-sub{font-size:11px;color:var(--stone);text-align:center;margin-top:8px;}
-.cr-wrap{width:100%;max-width:340px;margin:28px 0 0;}
-.cr-label{font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--stone);text-align:center;margin-bottom:16px;}
-.cr-outer{overflow:hidden;border-radius:20px;box-shadow:0 8px 40px rgba(18,18,20,0.18);border:1.5px solid var(--border);cursor:pointer;}
-.cr-track{display:flex;transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);}
-.cr-slide{flex-shrink:0;width:100%;}
-.cr-slide img{width:100%;display:block;}
-.cr-dots{display:flex;gap:7px;justify-content:center;margin-top:14px;}
-.cr-dot{width:6px;height:6px;border-radius:50%;background:var(--sand);transition:all 0.25s;cursor:pointer;}
-.cr-dot.on{width:20px;border-radius:4px;background:var(--gold);}
-.cr-caps{display:flex;gap:8px;justify-content:center;margin-top:10px;}
-.cr-cap{font-size:10px;font-weight:500;letter-spacing:0.06em;color:var(--stone);opacity:0.6;transition:all 0.25s;cursor:pointer;}
-.cr-cap.on{color:var(--ink);opacity:1;font-weight:700;}
-.gate-preview{width:100%;max-width:340px;margin:24px 0 0;}
-.gate-preview-title{font-size:10px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--stone);text-align:center;margin-bottom:14px;}
-.gate-screens{display:flex;gap:10px;justify-content:center;}
-.gate-screen{flex:1;max-width:150px;border-radius:14px;overflow:hidden;border:1.5px solid var(--border);
-  box-shadow:0 4px 20px rgba(18,18,20,0.1);background:var(--ink);}
-.gate-screen-header{background:var(--ink);padding:8px 10px;display:flex;align-items:center;justify-content:space-between;}
-.gate-screen-logo{font-size:10px;color:var(--gold);font-style:italic;font-weight:600;}
-.gate-screen-body{background:var(--ivory);}
-.gate-screen-hero{height:72px;background:linear-gradient(135deg,#0A1E28,#1D5A6B);display:flex;align-items:flex-end;padding:8px;}
-.gate-screen-hero-text{font-size:11px;color:var(--white);font-style:italic;opacity:0.9;}
-.gate-screen-section{padding:8px;}
-.gate-screen-label{font-size:8px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin-bottom:6px;}
-.gate-screen-card{background:var(--white);border-radius:6px;padding:6px 8px;margin-bottom:5px;display:flex;align-items:center;gap:6px;border:1px solid var(--sand);}
-.gate-screen-card-img{width:24px;height:24px;border-radius:5px;font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--cream);}
-.gate-screen-card-name{font-size:8px;font-weight:500;color:var(--ink);}
-.gate-screen-card-sub{font-size:7px;color:var(--stone);}
-.gate-screen-map{height:90px;background:linear-gradient(160deg,#b8d8e8,#c8e4d8);position:relative;overflow:hidden;}
-.gate-screen-pin{position:absolute;display:flex;flex-direction:column;align-items:center;}
-.gate-screen-pin-bubble{background:#1D7A9E;color:white;font-size:7px;padding:2px 6px;border-radius:8px;font-weight:600;white-space:nowrap;}
-.gate-screen-pin-tail{width:0;height:0;border-left:3px solid transparent;border-right:3px solid transparent;border-top:4px solid #1D7A9E;}
-.gate-spinner{width:20px;height:20px;border:2px solid rgba(196,165,90,0.3);border-top-color:var(--gold);
-  border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto;}
-@keyframes spin{to{transform:rotate(360deg);}}
 
 /* ── NAV ── */
 .nav{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:200;
@@ -221,7 +149,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .dp-tip:last-child{margin-bottom:0;}
 .dp-tip-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:6px;flex-shrink:0;}
 .dp-tip-text{font-size:13px;font-weight:300;line-height:1.6;color:var(--ink);}
-/* CONTACT INFO SECTION */
 .dp-contact{background:var(--white);border-radius:16px;padding:18px;margin-bottom:24px;border:1px solid var(--sand);}
 .dp-contact-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
 .dp-contact-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream);cursor:pointer;text-decoration:none;}
@@ -260,7 +187,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 
 /* MAP PAGE */
 .map-page{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:100vh;z-index:50;}
-.map-container{position:absolute;inset:0;top:52px;bottom:68px;}
 .map-filters{position:absolute;top:52px;left:0;right:0;z-index:60;
   padding:10px 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;
   background:rgba(249,246,240,0.93);backdrop-filter:blur(12px);
@@ -290,8 +216,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
   display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;
   transition:transform 0.18s;}
 .map-card-arrow:active{transform:scale(0.92);}
-.map-loading{position:absolute;inset:0;top:100px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:12px;background:var(--cream);}
 
 /* INFO PAGE */
 .info-page{padding:72px 20px 100px;}
@@ -308,9 +232,6 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .info-card-body strong{color:var(--ink);font-weight:500;}
 .info-card-body ul{padding-left:16px;margin-top:8px;}
 .info-card-body ul li{margin-bottom:5px;}
-.info-warning{background:#fff8f0;border:1.5px solid #f0d0a0;border-radius:14px;padding:16px;margin-bottom:10px;}
-.info-warning-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#c07820;margin-bottom:8px;}
-.info-warning-body{font-size:12px;color:#8a6030;line-height:1.6;}
 .info-contact-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
   padding:15px;border-radius:14px;background:var(--ink);color:var(--gold);
   font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.1em;
@@ -320,6 +241,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .empty span{display:block;font-size:28px;margin-bottom:8px;opacity:0.4;}
 .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:40vh;gap:14px;}
 .spinner{width:32px;height:32px;border:2px solid var(--sand);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 .loading-text{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);}
 .error-box{margin:20px;padding:16px 18px;background:#fff5f5;border:1px solid #ffcccc;border-radius:12px;font-size:13px;color:#cc4444;line-height:1.5;}
 .divider{height:1px;background:var(--sand);margin:4px 20px 0;}
@@ -333,7 +255,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni-l{font-size:9px;font-weight:500;letter-spacing:0.08em;color:var(--stone);text-transform:uppercase;}
 .bni.on .bni-l{color:var(--gold);}
 
-/* Block landscape mode on phones — encourage portrait */
+/* Block landscape mode on phones */
 @media (orientation: landscape) and (max-width: 900px) {
   .app::before {
     content: "Please rotate your phone back to portrait 🙏";
@@ -355,205 +277,50 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 
 const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
 
-// Read code from URL param
-const getUrlCode = () => {
-  const p = new URLSearchParams(window.location.search);
-  return p.get("code") || "";
+// ── GA4 event helper ──────────────────────────────────────────
+const trackEvent = (eventName, params = {}) => {
+  if (window.gtag) window.gtag("event", eventName, params);
 };
 
 export default function App() {
-  const [access,setAccess]   = useState(false);
-  const [crIdx,setCrIdx]     = useState(0);   // has valid code
-  const [checking,setChecking] = useState(true);  // checking stored/url code
-  const [codeInput,setCodeInput] = useState("");
-  const [codeError,setCodeError] = useState("");
-  const [codeLoading,setCodeLoading] = useState(false);
-
-  const [items,setItems]     = useState([]);
-  const [loading,setLoading] = useState(true);
-  const [error,setError]     = useState(null);
-  const [page,setPage]       = useState("home");
-  const [region,setRegion]   = useState(null);
-  const [detail,setDetail]   = useState(null);
-  const [mapPin,setMapPin]   = useState(null);
+  const [items,setItems]         = useState([]);
+  const [loading,setLoading]     = useState(true);
+  const [error,setError]         = useState(null);
+  const [page,setPage]           = useState("home");
+  const [region,setRegion]       = useState(null);
+  const [detail,setDetail]       = useState(null);
+  const [mapPin,setMapPin]       = useState(null);
   const [mapFilter,setMapFilter] = useState("all");
-  const mapRef               = useRef(null);
-  const gMapRef              = useRef(null);
-  const markersRef           = useRef([]);
+  const mapRef                   = useRef(null);
+  const gMapRef                  = useRef(null);
+  const markersRef               = useRef([]);
 
-  // Device ID — persistent UUID per browser
-  const getDeviceId = () => {
-    let id = localStorage.getItem("mg_device_id");
-    if (!id) {
-      id = "dev_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
-      localStorage.setItem("mg_device_id", id);
+  // ── Load GA4 + Vercel Analytics + content on mount ───────────
+  useEffect(() => {
+    // Google Analytics 4
+    if (!document.getElementById("ga4-script")) {
+      const s = document.createElement("script");
+      s.id = "ga4-script";
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+      s.async = true;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function(){ window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", GA_ID);
     }
-    return id;
-  };
 
-  // Track login — get real country from browser-side IP lookup
-  const trackLogin = async (code) => {
-    try {
-      // Step 1: Get real IP + country from free API (called directly from browser)
-      let country = "unknown";
-      let ip = "unknown";
-      try {
-        const geo = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(3000) });
-        const geoData = await geo.json();
-        country = geoData.country_name || geoData.country || "unknown";
-        ip      = geoData.ip || "unknown";
-      } catch(e) {
-        // Fallback — try alternative
-        try {
-          const geo2 = await fetch("https://ip-api.com/json/?fields=country,query", { signal: AbortSignal.timeout(3000) });
-          const geoData2 = await geo2.json();
-          country = geoData2.country || "unknown";
-          ip      = geoData2.query  || "unknown";
-        } catch(e2) { /* silent */ }
-      }
-
-      // Step 2: Send to proxy with real location data
-      await fetch(`${PROXY}?action=track`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code,
-          deviceId:  getDeviceId(),
-          userAgent: navigator.userAgent,
-          country,
-          ip,
-        }),
-      });
-    } catch(e) { console.warn("Tracking failed:", e); }
-  };
-
-  // On mount: ALWAYS verify against server — never trust localStorage alone
-  useEffect(()=>{
-    const stored  = localStorage.getItem("mg_code");
-    const urlCode = getUrlCode();
-    const toCheck = urlCode || stored;
-    if (toCheck) {
-      verifyOnMount(toCheck);
-    } else {
-      setChecking(false);
+    // Vercel Analytics
+    if (!document.getElementById("va-script")) {
+      const v = document.createElement("script");
+      v.id = "va-script";
+      v.src = "/_vercel/insights/script.js";
+      v.defer = true;
+      document.head.appendChild(v);
     }
-  },[]);
 
-  // Mount verification — always checks server, forces logout if code deleted/invalid
-  const verifyOnMount = async (code) => {
-    try {
-      const url = `${PROXY}?action=verify&code=${encodeURIComponent(code.trim().toUpperCase())}`;
-      const res  = await fetch(url);
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("mg_code", code.trim().toUpperCase());
-        setAccess(true);
-        trackLogin(code.trim().toUpperCase());
-        fetchContent();
-      } else {
-        // Code is invalid or deleted — force logout immediately
-        localStorage.removeItem("mg_code");
-        setAccess(false);
-        setPage("home");
-      }
-    } catch(e) {
-      // Network error — allow access if code was previously valid
-      // This prevents locking out users with bad connection
-      const stored = localStorage.getItem("mg_code");
-      if (stored) {
-        setAccess(true);
-        fetchContent();
-      }
-    } finally {
-      setChecking(false);
-    }
-  };
-
-  const verifyCode = async (code, silent=false) => {
-    if (!silent) setCodeLoading(true);
-    setCodeError("");
-    try {
-      const url = `${PROXY}?action=verify&code=${encodeURIComponent(code.trim().toUpperCase())}`;
-      const res  = await fetch(url);
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("mg_code", code.trim().toUpperCase());
-        setAccess(true);
-        trackLogin(code.trim().toUpperCase());
-        fetchContent();
-      } else {
-        if (!silent) setCodeError("Invalid code. Please check and try again.");
-        localStorage.removeItem("mg_code");
-        setAccess(false);
-      }
-    } catch(e) {
-      if (!silent) setCodeError("Connection error. Please try again.");
-    } finally {
-      setCodeLoading(false);
-      setChecking(false);
-    }
-  };
-
-  const handleSubmit = () => {
-    if (!codeInput.trim()) { setCodeError("Please enter your access code."); return; }
-    verifyCode(codeInput);
-  };
-
-  const logout = () => {
-    localStorage.removeItem("mg_code");
-    setAccess(false);
-    setPage("home");
-    setRegion(null);
-    setDetail(null);
-  };
-
-  // ── 3-minute session guard + background re-check ──────────────
-  useEffect(()=>{
-    if (!access) return;
-
-    const checkSession = async () => {
-      const stored = localStorage.getItem("mg_code");
-      if (!stored) {
-        setAccess(false);
-        setPage("home");
-        return;
-      }
-      try {
-        const res  = await fetch(`${PROXY}?action=verify&code=${encodeURIComponent(stored)}`);
-        const data = await res.json();
-        if (!data.success) {
-          // Code deleted or revoked — logout immediately
-          localStorage.removeItem("mg_code");
-          setAccess(false);
-          setPage("home");
-          setRegion(null);
-          setDetail(null);
-          setMapPin(null);
-        }
-      } catch(e) {
-        // Network error — do NOT logout, try again next interval
-        console.warn("Session check failed — will retry in 3 min");
-      }
-    };
-
-    // Poll every 3 minutes
-    const interval = setInterval(checkSession, 3 * 60 * 1000);
-
-    // Re-check when app returns from background (visibility change)
-    const onVisible = () => {
-      if (document.visibilityState === "visible") checkSession();
-    };
-    document.addEventListener("visibilitychange", onVisible);
-
-    // Re-check when window gets focus (desktop/iPad)
-    window.addEventListener("focus", checkSession);
-
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("visibilitychange", onVisible);
-      window.removeEventListener("focus", checkSession);
-    };
-  }, [access]);
+    fetchContent();
+  }, []);
 
   const fetchContent = async () => {
     setLoading(true); setError(null);
@@ -567,35 +334,36 @@ export default function App() {
 
   const scrollTop = () => window.scrollTo({top:0, behavior:"instant"});
 
-  const goHome   = ()=>{ setPage("home");   setRegion(null); setDetail(null); setMapPin(null); scrollTop(); };
-  const goRegion = r =>{ setRegion(r);      setPage("region"); setDetail(null); scrollTop(); };
-  const goDetail = b =>{ setDetail(b);      setPage("detail"); scrollTop(); };
-  const goBack   = ()=>{ setPage("region"); setDetail(null); scrollTop(); };
-  const goMap    = ()=>{ setPage("map");    setDetail(null); setRegion(null); scrollTop(); };
+  const goHome = () => { setPage("home"); setRegion(null); setDetail(null); setMapPin(null); scrollTop(); };
+  const goRegion = r => {
+    setRegion(r); setPage("region"); setDetail(null); scrollTop();
+    trackEvent("view_region", { region: r.id });
+  };
+  const goDetail = b => {
+    setDetail(b); setPage("detail"); scrollTop();
+    trackEvent("view_place", { place_name: b.name, place_category: b.category, place_area: b.area });
+  };
+  const goBack = () => { setPage("region"); setDetail(null); scrollTop(); };
+  const goMap  = () => { setPage("map"); setDetail(null); setRegion(null); scrollTop(); trackEvent("view_map"); };
 
-  // ── MapLibre Implementation (Free, no API key needed) ──────
+  // ── MapLibre ─────────────────────────────────────────────────
   const CAT_COLORS = {
-    Beach: "#1D7A9E", Restaurant: "#8B6914",
-    Activity: "#1A7A4A", Hotel: "#6B2D8B", Village: "#9E4A1D",
+    Beach:"#1D7A9E", Restaurant:"#8B6914", Activity:"#1A7A4A", Hotel:"#6B2D8B", Village:"#9E4A1D",
   };
 
   const loadMapLibre = useCallback(() => {
     if (!mapRef.current || gMapRef.current) return;
-
-    // Load MapLibre CSS + JS if not already loaded
     if (!document.getElementById("maplibre-css")) {
       const link = document.createElement("link");
-      link.id   = "maplibre-css";
-      link.rel  = "stylesheet";
+      link.id = "maplibre-css"; link.rel = "stylesheet";
       link.href = "https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css";
       document.head.appendChild(link);
     }
-
     const loadLib = () => {
       if (window.maplibregl) { initMapLibre(); return; }
       if (document.getElementById("maplibre-js")) return;
       const script = document.createElement("script");
-      script.id  = "maplibre-js";
+      script.id = "maplibre-js";
       script.src = "https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js";
       script.onload = () => initMapLibre();
       document.head.appendChild(script);
@@ -606,141 +374,87 @@ export default function App() {
   const initMapLibre = () => {
     if (!mapRef.current || gMapRef.current) return;
     const ml = window.maplibregl;
-
     const map = new ml.Map({
       container: mapRef.current,
       style: {
         version: 8,
-        sources: {
-          "carto": {
-            type: "raster",
-            tiles: [
-              "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-              "https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
-            ],
-            tileSize: 256,
-            attribution: "© OpenStreetMap © CARTO",
-          }
-        },
-        layers: [{
-          id: "carto-tiles",
-          type: "raster",
-          source: "carto",
-          paint: {
-            "raster-saturation": -0.25,
-            "raster-brightness-min": 0.08,
-            "raster-contrast": 0.05,
-            "raster-opacity": 0.9,
-          }
-        }],
+        sources: { "carto": { type:"raster", tiles:[
+          "https://a.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+          "https://b.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png",
+        ], tileSize:256, attribution:"© OpenStreetMap © CARTO" }},
+        layers: [{ id:"carto-tiles", type:"raster", source:"carto", paint:{
+          "raster-saturation":-0.25, "raster-brightness-min":0.08, "raster-contrast":0.05, "raster-opacity":0.9,
+        }}],
         glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
       },
-      center: [24.8093, 35.2401],
-      zoom: 8.5,
-      minZoom: 7,
-      maxZoom: 16,
-      maxBounds: [[22.0, 34.2], [27.5, 36.8]],
+      center:[24.8093,35.2401], zoom:8.5, minZoom:7, maxZoom:16,
+      maxBounds:[[22.0,34.2],[27.5,36.8]],
     });
-
-    // Add zoom controls
-    map.addControl(new ml.NavigationControl({ showCompass: false }), "bottom-right");
-
+    map.addControl(new ml.NavigationControl({ showCompass:false }), "bottom-right");
     gMapRef.current = map;
-
-    map.on("load", () => {
-      addMapLibreMarkers(map, mapFilter);
-    });
+    map.on("load", () => addMapLibreMarkers(map, mapFilter));
   };
 
   const addMapLibreMarkers = (map, filter) => {
-    // Remove existing markers
     markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
-
     const toShow = filter === "all"
       ? items.filter(i => i.lat && i.lng)
       : items.filter(i => i.category === filter && i.lat && i.lng);
-
     toShow.forEach(item => {
       const color = CAT_COLORS[item.category] || "#C4A55A";
-      const cat   = getCat(item.category);
-
-      // Custom bubble marker element
+      const cat = getCat(item.category);
       const el = document.createElement("div");
       el.style.cssText = "display:flex;flex-direction:column;align-items:center;cursor:pointer;";
       el.innerHTML = `
-        <div style="
-          display:flex;align-items:center;gap:4px;
-          background:${color};color:white;
-          padding:5px 11px;border-radius:20px;
-          font-family:'Jost',sans-serif;font-size:11px;font-weight:600;
-          white-space:nowrap;letter-spacing:0.02em;
-          box-shadow:0 3px 10px rgba(0,0,0,0.3);
-          transition:transform 0.15s;
-        ">${cat.icon} ${item.name}</div>
-        <div style="
-          width:0;height:0;
-          border-left:5px solid transparent;
-          border-right:5px solid transparent;
-          border-top:7px solid ${color};
-        "></div>
+        <div style="display:flex;align-items:center;gap:4px;background:${color};color:white;
+          padding:5px 11px;border-radius:20px;font-family:'Jost',sans-serif;font-size:11px;font-weight:600;
+          white-space:nowrap;letter-spacing:0.02em;box-shadow:0 3px 10px rgba(0,0,0,0.3);transition:transform 0.15s;">
+          ${cat.icon} ${item.name}
+        </div>
+        <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${color};"></div>
       `;
-
-      el.addEventListener("mouseenter", () => {
-        el.querySelector("div").style.transform = "scale(1.08)";
-      });
-      el.addEventListener("mouseleave", () => {
-        el.querySelector("div").style.transform = "scale(1)";
-      });
+      el.addEventListener("mouseenter", () => { el.querySelector("div").style.transform = "scale(1.08)"; });
+      el.addEventListener("mouseleave", () => { el.querySelector("div").style.transform = "scale(1)"; });
       el.addEventListener("click", () => {
         setMapPin(item);
-        gMapRef.current.flyTo({
-          center: [parseFloat(item.lng), parseFloat(item.lat)],
-          zoom: Math.max(gMapRef.current.getZoom(), 11),
-          duration: 600,
-        });
+        gMapRef.current.flyTo({ center:[parseFloat(item.lng),parseFloat(item.lat)], zoom:Math.max(gMapRef.current.getZoom(),11), duration:600 });
+        trackEvent("map_pin_click", { place_name:item.name, place_category:item.category });
       });
-
-      const marker = new window.maplibregl.Marker({ element: el, anchor: "bottom" })
-        .setLngLat([parseFloat(item.lng), parseFloat(item.lat)])
-        .addTo(map);
-
+      const marker = new window.maplibregl.Marker({ element:el, anchor:"bottom" })
+        .setLngLat([parseFloat(item.lng), parseFloat(item.lat)]).addTo(map);
       markersRef.current.push(marker);
     });
   };
 
-  // Load MapLibre when map page opens
   useEffect(() => {
-    if (page === "map") {
-      const timer = setTimeout(() => loadMapLibre(), 150);
-      return () => clearTimeout(timer);
-    }
+    if (page === "map") { const t = setTimeout(() => loadMapLibre(), 150); return () => clearTimeout(t); }
   }, [page, items]);
 
-  // Re-filter markers when filter changes
   useEffect(() => {
-    if (gMapRef.current && window.maplibregl) {
-      if (gMapRef.current.loaded()) {
-        addMapLibreMarkers(gMapRef.current, mapFilter);
-      }
+    if (gMapRef.current && window.maplibregl && gMapRef.current.loaded()) {
+      addMapLibreMarkers(gMapRef.current, mapFilter);
     }
   }, [mapFilter, items]);
 
   const forRegion = (area,cat) => items.filter(i=>i.area===area&&i.category===cat);
-  const rGrad = r=>`linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
+  const rGrad = r => `linear-gradient(150deg,${r.color1} 0%,${r.color2} 100%)`;
 
   const openMaps = item => {
     const url = item.maps
       ? item.maps
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.name+' '+item.area+' Crete Greece')}`;
-    // Use location.href for iOS Safari compatibility — prevents blank page on return
     const a = document.createElement("a");
-    a.href = url;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    a.href=url; a.target="_blank"; a.rel="noopener noreferrer";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    trackEvent("open_maps", { place_name:item.name, place_category:item.category });
+  };
+
+  const openExternalLink = (url, item, linkType) => {
+    const a = document.createElement("a");
+    a.href=url; a.target="_blank"; a.rel="noopener noreferrer";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    trackEvent("click_external_link", { place_name:item.name, place_category:item.category, link_type:linkType });
   };
 
   const Card = ({b}) => {
@@ -768,98 +482,6 @@ export default function App() {
     return <div className="ls">{list.map(b=><Card key={b.id} b={b}/>)}</div>;
   };
 
-  // ── CHECKING stored code ──
-  if (checking) {
-    return (
-      <>
-        <style>{css}</style>
-        <div className="gate">
-          <div className="gate-logo"><span className="gate-my">My</span><span className="gate-gr">Greece</span></div>
-          <div className="gate-spinner"/>
-        </div>
-      </>
-    );
-  }
-
-  // ── ACCESS GATE ──
-  if (!access) {
-    return (
-      <>
-        <style>{css}</style>
-        <div className="gate">
-          <div className="gate-logo"><span className="gate-my">My</span><span className="gate-gr">Greece</span></div>
-          <div className="gate-hero">🌊</div>
-          <div className="gate-title">Your Crete Guide<br/>Awaits</div>
-          <div className="gate-sub">Enter your unique access code below to unlock the full MyGreece experience.</div>
-          <div className="gate-input-wrap">
-            <input
-              className="gate-input"
-              placeholder="Enter your access code"
-              value={codeInput}
-              onChange={e=>setCodeInput(e.target.value.toUpperCase())}
-              onKeyDown={e=>e.key==="Enter"&&handleSubmit()}
-              maxLength={20}
-            />
-          </div>
-          <div className="gate-error">{codeError}</div>
-          <button className="gate-btn" onClick={handleSubmit} disabled={codeLoading}>
-            {codeLoading ? <div className="gate-spinner"/> : "Unlock MyGreece →"}
-          </button>
-          <div className="gate-footer">
-            Already purchased? Check your email for your unique code.
-          </div>
-
-          <div className="gate-divider">
-            <div className="gate-divider-line"/>
-            <div className="gate-divider-text">or</div>
-            <div className="gate-divider-line"/>
-          </div>
-
-          <button className="gate-buy-btn" onClick={()=>window.open("https://buy.stripe.com/8x28wIaUi7Y86HI0dC8ww02","_blank")}>
-            <span>✦</span> Get Access — Buy Now
-          </button>
-          <div className="gate-buy-sub">One payment · Lifetime access · Instant delivery</div>
-
-          {/* Premium Swipeable Carousel */}
-          <div className="cr-wrap">
-            <div className="cr-label">✦ Inside the guide</div>
-            <div className="cr-outer"
-              onTouchStart={e=>{ window._tx=e.touches[0].clientX; }}
-              onTouchEnd={e=>{
-                const d=window._tx-e.changedTouches[0].clientX;
-                if(Math.abs(d)>40) setCrIdx(p=>d>0?Math.min(p+1,3):Math.max(p-1,0));
-              }}
-              onClick={e=>{
-                const r=e.currentTarget.getBoundingClientRect();
-                const x=e.clientX-r.left;
-                if(x>r.width*0.6) setCrIdx(p=>Math.min(p+1,3));
-                else if(x<r.width*0.4) setCrIdx(p=>Math.max(p-1,0));
-              }}
-            >
-              <div className="cr-track" style={{transform:`translateX(-${crIdx*100}%)`}}>
-                <div className="cr-slide"><img src="https://i.imgur.com/qeCcqwv.jpeg" alt="Regions" style={{width:"100%",display:"block"}}/></div>
-                <div className="cr-slide"><img src="https://i.imgur.com/tYbahia.jpeg" alt="Map" style={{width:"100%",display:"block"}}/></div>
-                <div className="cr-slide"><img src="https://i.imgur.com/GqU0nF7.jpeg" alt="Beach" style={{width:"100%",display:"block"}}/></div>
-                <div className="cr-slide"><img src="https://i.imgur.com/oqmzsO1.jpeg" alt="Tips" style={{width:"100%",display:"block"}}/></div>
-              </div>
-            </div>
-            <div className="cr-dots">
-              {[0,1,2,3].map(i=>(
-                <div key={i} className={`cr-dot ${crIdx===i?"on":""}`} onClick={()=>setCrIdx(i)}/>
-              ))}
-            </div>
-            <div className="cr-caps">
-              {["Regions","Map","Beaches","Tips"].map((cap,i)=>(
-                <div key={i} className={`cr-cap ${crIdx===i?"on":""}`} onClick={()=>setCrIdx(i)}>{cap}</div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // ── MAIN APP (access granted) ──
   return (
     <>
       <style>{css}</style>
@@ -867,10 +489,7 @@ export default function App() {
 
         <nav className="nav">
           {page==="home" ? (
-            <>
-              <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
-              <div className="nav-right" onClick={logout} title="Sign out">✕ Exit</div>
-            </>
+            <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
           ) : (
             <>
               <div className="nav-back" onClick={page==="detail"?goBack:goHome}>
@@ -971,7 +590,7 @@ export default function App() {
                   <div className="dp-info-card"><div className="dp-info-icon">📍</div><div className="dp-info-label">Area</div><div className="dp-info-value">{detail.area}</div></div>
                   <div className="dp-info-card"><div className="dp-info-icon">{cat.icon}</div><div className="dp-info-label">Type</div><div className="dp-info-value">{detail.category}</div></div>
                 </div>
-                {/* Show Visitor Tips for beaches, activities, villages */}
+
                 {["Beach","Activity","Village"].includes(detail.category) && (
                   <div className="dp-tips">
                     <div className="dp-tips-title">✦ Visitor Tips</div>
@@ -981,97 +600,79 @@ export default function App() {
                   </div>
                 )}
 
-                {/* Show Contact Info for hotels & restaurants */}
                 {["Hotel","Restaurant"].includes(detail.category) && (
                   <div className="dp-contact">
                     <div className="dp-contact-title">📋 Contact & Info</div>
-
                     {detail.phone && (
-                      <a className="dp-contact-item" href={`tel:${detail.phone}`}>
+                      <a className="dp-contact-item" href={`tel:${detail.phone}`} onClick={()=>trackEvent("click_phone",{place_name:detail.name})}>
                         <div className="dp-contact-icon">📞</div>
                         <div><div className="dp-contact-label">Phone</div><div className="dp-contact-value">{detail.phone}</div></div>
                       </a>
                     )}
-
                     {detail.email && (
-                      <a className="dp-contact-item" href={`mailto:${detail.email}`}>
+                      <a className="dp-contact-item" href={`mailto:${detail.email}`} onClick={()=>trackEvent("click_email",{place_name:detail.name})}>
                         <div className="dp-contact-icon">✉️</div>
                         <div><div className="dp-contact-label">Email</div><div className="dp-contact-value">{detail.email}</div></div>
                       </a>
                     )}
-
                     {detail.website && (
-                      <a className="dp-contact-item" href={detail.website} target="_blank" rel="noopener noreferrer">
+                      <a className="dp-contact-item" href={detail.website} target="_blank" rel="noopener noreferrer"
+                        onClick={()=>trackEvent("click_external_link",{place_name:detail.name,place_category:detail.category,link_type:"website"})}>
                         <div className="dp-contact-icon">🌐</div>
                         <div><div className="dp-contact-label">Website</div><div className="dp-contact-value">{detail.website.replace(/https?:\/\/(www\.)?/,"")}</div></div>
                       </a>
                     )}
-
                     {detail.instagram && (
-                      <a className="dp-contact-item" href={`https://instagram.com/${detail.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer">
+                      <a className="dp-contact-item" href={`https://instagram.com/${detail.instagram.replace("@","")}`} target="_blank" rel="noopener noreferrer"
+                        onClick={()=>trackEvent("click_external_link",{place_name:detail.name,place_category:detail.category,link_type:"instagram"})}>
                         <div className="dp-contact-icon">📸</div>
                         <div><div className="dp-contact-label">Instagram</div><div className="dp-contact-value">{detail.instagram.startsWith("@")?detail.instagram:`@${detail.instagram}`}</div></div>
                       </a>
                     )}
-
                     {detail.hours && (
                       <div className="dp-contact-item" style={{cursor:"default"}}>
                         <div className="dp-contact-icon">⏰</div>
                         <div><div className="dp-contact-label">Hours</div><div className="dp-contact-value">{detail.hours}</div></div>
                       </div>
                     )}
-
                     {detail.address && (
                       <a className="dp-contact-item"
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(detail.address)}`}
-                        target="_blank" rel="noopener noreferrer">
+                        target="_blank" rel="noopener noreferrer"
+                        onClick={()=>trackEvent("click_external_link",{place_name:detail.name,place_category:detail.category,link_type:"address"})}>
                         <div className="dp-contact-icon">📍</div>
                         <div><div className="dp-contact-label">Address</div><div className="dp-contact-value">{detail.address}</div></div>
                       </a>
                     )}
-
                     {!detail.phone && !detail.email && !detail.website && !detail.instagram && !detail.hours && !detail.address && (
-                      <div style={{fontSize:13,color:"var(--stone)",fontWeight:300}}>
-                        Add contact details in Notion to show them here.
-                      </div>
+                      <div style={{fontSize:13,color:"var(--stone)",fontWeight:300}}>Add contact details in Notion to show them here.</div>
                     )}
                   </div>
                 )}
+
                 <button className="maps-btn" onClick={()=>openMaps(detail)}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   {detail.maps?"Open Exact Location in Maps":"Search in Google Maps"}
                 </button>
-                {/* GetYourGuide button — only for Activities with a GYG link */}
-                {detail.category === "Activity" && detail.gyg && (
-                  <button className="gyg-btn" onClick={()=>{
-                    const a=document.createElement("a");
-                    a.href=detail.gyg;a.target="_blank";a.rel="noopener noreferrer";
-                    document.body.appendChild(a);a.click();document.body.removeChild(a);
-                  }}>
+
+                {detail.category==="Activity" && detail.gyg && (
+                  <button className="gyg-btn" onClick={()=>openExternalLink(detail.gyg,detail,"getyourguide")}>
                     <span>🎟</span>
-                    <span>
-                      Book This Activity
-                      <span className="gyg-btn-sub">via GetYourGuide · Best Price Guaranteed</span>
-                    </span>
+                    <span>Book This Activity<span className="gyg-btn-sub">via GetYourGuide · Best Price Guaranteed</span></span>
                   </button>
                 )}
 
-                {/* Booking.com button — only for Hotels with a booking link */}
-                {detail.category === "Hotel" && detail.booking && (
-                  <button className="booking-btn" onClick={()=>{
-                    const a=document.createElement("a");
-                    a.href=detail.booking;a.target="_blank";a.rel="noopener noreferrer";
-                    document.body.appendChild(a);a.click();document.body.removeChild(a);
-                  }}>
+                {detail.category==="Hotel" && detail.booking && (
+                  <button className="booking-btn" onClick={()=>openExternalLink(detail.booking,detail,"booking")}>
                     <span>🏨</span>
-                    <span>
-                      Book on Booking.com
-                      <span className="booking-btn-sub">Best price · Free cancellation available</span>
-                    </span>
+                    <span>Book on Booking.com<span className="booking-btn-sub">Best price · Free cancellation available</span></span>
                   </button>
                 )}
 
-                <button className="share-btn" onClick={()=>navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:window.location.href})}>
+                <button className="share-btn" onClick={()=>{
+                  navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:window.location.href});
+                  trackEvent("share_place",{place_name:detail.name});
+                }}>
                   <span>↑</span> Share this place
                 </button>
               </div>
@@ -1079,38 +680,32 @@ export default function App() {
           );
         })()}
 
-        {/* MAP PAGE — always rendered, hidden when not active to preserve map state */}
-        <div style={{display: page==="map" ? "block" : "none"}} className="map-page">
-          {/* Filters */}
+        {/* MAP PAGE */}
+        <div style={{display:page==="map"?"block":"none"}} className="map-page">
           <div className="map-filters">
             {[
-              {id:"all",       label:"All",        icon:"🗺"},
-              {id:"Beach",     label:"Beaches",    icon:"🌊"},
-              {id:"Restaurant",label:"Food",       icon:"🫒"},
-              {id:"Hotel",     label:"Stay",       icon:"🏡"},
-              {id:"Activity",  label:"Activities", icon:"🧗"},
-              {id:"Village",   label:"Villages",   icon:"⛪"},
+              {id:"all",label:"All",icon:"🗺"},
+              {id:"Beach",label:"Beaches",icon:"🌊"},
+              {id:"Restaurant",label:"Food",icon:"🫒"},
+              {id:"Hotel",label:"Stay",icon:"🏡"},
+              {id:"Activity",label:"Activities",icon:"🧗"},
+              {id:"Village",label:"Villages",icon:"⛪"},
             ].map(f=>(
-              <div key={f.id}
-                className={`map-chip ${mapFilter===f.id?"on":""}`}
-                onClick={()=>setMapFilter(f.id)}>
+              <div key={f.id} className={`map-chip ${mapFilter===f.id?"on":""}`}
+                onClick={()=>{ setMapFilter(f.id); trackEvent("map_filter",{filter:f.id}); }}>
                 <span>{f.icon}</span>{f.label}
               </div>
             ))}
           </div>
-
-          {/* Map container */}
           <div className="map-container">
             <div ref={mapRef} className="map-div"/>
           </div>
-
-          {/* Place card popup */}
           {mapPin && page==="map" && (
             <div className="map-card">
               <div className="map-card-img">
                 {mapPin.image
                   ? <img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>
-                  : <span style={{fontSize:24}}>{mapPin.emoji || getCat(mapPin.category).icon}</span>}
+                  : <span style={{fontSize:24}}>{mapPin.emoji||getCat(mapPin.category).icon}</span>}
               </div>
               <div className="map-card-info">
                 <div className="map-card-name">{mapPin.name}</div>
@@ -1123,6 +718,7 @@ export default function App() {
                 setDetail(mapPin);
                 setPage("detail");
                 setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);
+                trackEvent("view_place",{place_name:mapPin.name,place_category:mapPin.category,place_area:mapPin.area,source:"map"});
               }} style={{background:"#18181A",display:"flex",alignItems:"center",justifyContent:"center"}}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M5 12H19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1141,7 +737,6 @@ export default function App() {
               <div className="info-hero-title">App Guidelines &amp; Important Information</div>
               <div className="info-hero-sub">Please read carefully before using the app.</div>
             </div>
-
             <div className="info-section">
               <div className="info-section-title">🍽 Reservations</div>
               <div className="info-card">
@@ -1158,33 +753,6 @@ export default function App() {
                 </div>
               </div>
             </div>
-
-            <div className="info-section">
-              <div className="info-section-title">🔐 Account & Device Policy</div>
-              <div className="info-warning">
-                <div className="info-warning-title">⚠️ One Device Per Access Code</div>
-                <div className="info-warning-body">
-                  Each access code is valid for <strong>one device only</strong>. It is strictly prohibited to use the same access code on multiple active devices. If our system detects that an access code has been shared or used on more than one device, access may be <strong>permanently revoked</strong> for all involved users.
-                </div>
-              </div>
-              <div className="info-card">
-                <div className="info-card-title"><span className="info-card-icon">🔒</span>Keep Your Code Private</div>
-                <div className="info-card-body">
-                  Please do not share your access code or application link with anyone. Your code is personal and linked to your purchase.
-                </div>
-              </div>
-            </div>
-
-            <div className="info-section">
-              <div className="info-section-title">💳 Refund Policy</div>
-              <div className="info-card">
-                <div className="info-card-title"><span className="info-card-icon">❌</span>No Refunds</div>
-                <div className="info-card-body">
-                  All purchases are final. <strong>No refunds will be issued under any circumstances.</strong> Please make sure you understand what you are purchasing before completing your payment.
-                </div>
-              </div>
-            </div>
-
             <div className="info-section">
               <div className="info-section-title">📲 Add to Home Screen</div>
               <div className="info-card">
@@ -1207,7 +775,6 @@ export default function App() {
                 </div>
               </div>
             </div>
-
             <div className="info-section">
               <div className="info-section-title">💬 Support</div>
               <div className="info-card">
@@ -1220,18 +787,17 @@ export default function App() {
                 ✉️ Contact Us — mygreece61@gmail.com
               </button>
             </div>
-
             <div style={{height:80}}/>
           </div>
         )}
 
         <div className="bnav">
           {[
-            {id:"home",    icon:"🏠",label:"Home",    action:goHome},
-            {id:"map",     icon:"🗺", label:"Map",     action:goMap},
-            {id:"Chania",  icon:"⛵",label:"Chania",  action:()=>goRegion(REGIONS[0])},
-            {id:"info",    icon:"ℹ️", label:"Info",    action:()=>{ setPage("info"); scrollTop(); }},
-            {id:"refresh", icon:"↻", label:"Refresh", action:fetchContent},
+            {id:"home",   icon:"🏠", label:"Home",    action:goHome},
+            {id:"map",    icon:"🗺",  label:"Map",     action:goMap},
+            {id:"Chania", icon:"⛵", label:"Chania",  action:()=>goRegion(REGIONS[0])},
+            {id:"info",   icon:"ℹ️",  label:"Info",    action:()=>{ setPage("info"); scrollTop(); }},
+            {id:"refresh",icon:"↻",  label:"Refresh", action:fetchContent},
           ].map(n=>(
             <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
