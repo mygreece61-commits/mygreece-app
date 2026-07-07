@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { inject } from "@vercel/analytics";
 
 const PROXY = "https://mygreece-proxy.vercel.app/api/notion";
 const GA_ID = "G-YR7XSTZ1G5";
@@ -311,13 +312,7 @@ export default function App() {
     }
 
     // Vercel Analytics
-    if (!document.getElementById("va-script")) {
-      const v = document.createElement("script");
-      v.id = "va-script";
-      v.src = "/_vercel/insights/script.js";
-      v.defer = true;
-      document.head.appendChild(v);
-    }
+    inject();
 
     fetchContent();
   }, []);
