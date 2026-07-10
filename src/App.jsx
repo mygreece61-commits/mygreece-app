@@ -531,7 +531,8 @@ export default function App() {
 
         {page==="region" && region && <>
           <div className="rh">
-            <div style={{position:"absolute",inset:0,background:rGrad(region)}}/>
+            {region.image && <img src={region.image} alt={region.id} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:region.imgPos||"center",filter:"blur(6px) brightness(0.45)",transform:"scale(1.05)"}}/>}
+            {!region.image && <div style={{position:"absolute",inset:0,background:rGrad(region)}}/>}
             <div className="rh-glow"/><div className="rh-fade"/>
             <div className="rh-c">
               <div className="rh-eye">MyGreece ◈ Crete</div>
@@ -789,13 +790,11 @@ export default function App() {
 
         <div className="bnav">
           {[
-            {id:"home",   icon:"🏠", label:"Home",    action:goHome},
-            {id:"map",    icon:"🗺",  label:"Map",     action:goMap},
-            {id:"Chania", icon:"⛵", label:"Chania",  action:()=>goRegion(REGIONS[0])},
-            {id:"info",   icon:"ℹ️",  label:"Info",    action:()=>{ setPage("info"); scrollTop(); }},
-            {id:"refresh",icon:"↻",  label:"Refresh", action:fetchContent},
+            {id:"home", icon:"🏠", label:"Home",  action:goHome},
+            {id:"map",  icon:"🗺",  label:"Map",   action:goMap},
+            {id:"info", icon:"ℹ️",  label:"Info",  action:()=>{ setPage("info"); scrollTop(); }},
           ].map(n=>(
-            <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":page==="region"&&region?.id===n.id?"on":""}`} onClick={n.action}>
+            <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
               <div className="bni-l">{n.label}</div>
             </div>
