@@ -5,10 +5,10 @@ const PROXY = "https://mygreece-proxy.vercel.app/api/notion";
 const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
-  { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", emoji:"⛵", image:"https://i.imgur.com/33BpInH.jpeg", imgPos:"center 60%" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", emoji:"🏰", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
-  { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", emoji:"🏛", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
-  { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", emoji:"🌿", image:"https://i.imgur.com/vz7tbdh.jpeg", imgPos:"center 50%" },
+  { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", image:"https://i.imgur.com/9V64R8S.jpeg", imgPos:"center 50%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 40%" },
+  { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
+  { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 50%" },
 ];
 
 const CATS = [
@@ -523,12 +523,11 @@ export default function App() {
                 <div className="rc-shim"/>
                 <div className="rc-body"><div className="rc-name">{r.id}</div><div className="rc-sub">{r.tagline}</div></div>
                 <div className="rc-badge">{CATS.reduce((a,c)=>a+forRegion(r.id,c.id).length,0)} places</div>
-                <div className="rc-emoji">{r.emoji}</div>
               </div>
             ))}
           </div>
           <div className="sp" style={{paddingBottom:0}}><div className="sh"><div className="st">Browse by Vibe</div></div></div>
-          <div className="chips">{CATS.map(c=><div key={c.id} className="chip"><span style={{fontSize:14}}>{c.icon}</span> {c.label}</div>)}</div>
+          <div className="chips">{CATS.map(c=><div key={c.id} className="chip">{c.label}</div>)}</div>
           <div className="pb"/>
         </>}
 
