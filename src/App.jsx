@@ -498,7 +498,8 @@ export default function App() {
 
         {page==="home" && <>
           <div className="hero">
-            <div className="hero-bg"/><div className="hero-glow"/><div className="hero-dots"/><div className="hero-fade"/>
+            <img src="https://i.imgur.com/EEzJfQo.jpeg" alt="Crete" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}}/>
+            <div className="hero-bg" style={{opacity:0.55}}/><div className="hero-glow"/><div className="hero-fade"/>
             <div className="hero-c">
               <div className="h-eye">Your Insider Guide to</div>
               <div className="h-h1">Crete,<br/><em>Curated.</em></div>
