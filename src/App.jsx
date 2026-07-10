@@ -5,10 +5,10 @@ const PROXY = "https://mygreece-proxy.vercel.app/api/notion";
 const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
-  { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", emoji:"⛵", image:"https://i.imgur.com/33BpInH.jpeg" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", emoji:"🏰", image:"https://i.imgur.com/m50yE9s.jpeg" },
-  { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", emoji:"🏛", image:"https://i.imgur.com/w7rkNoJ.jpeg" },
-  { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", emoji:"🌿", image:"https://i.imgur.com/vz7tbdh.jpeg" },
+  { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", emoji:"⛵", image:"https://i.imgur.com/33BpInH.jpeg", imgPos:"center 60%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", emoji:"🏰", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
+  { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", emoji:"🏛", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
+  { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", emoji:"🌿", image:"https://i.imgur.com/vz7tbdh.jpeg", imgPos:"center 50%" },
 ];
 
 const CATS = [
@@ -498,7 +498,7 @@ export default function App() {
 
         {page==="home" && <>
           <div className="hero">
-            <img src="https://i.imgur.com/EEzJfQo.jpeg" alt="Crete" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 70%"}}/>
+            <img src="https://i.imgur.com/TwfbviO.jpeg" alt="Crete" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 70%"}}/>
             <div className="hero-bg" style={{opacity:0.55}}/><div className="hero-glow"/><div className="hero-fade"/>
             <div className="hero-c">
               <div className="h-eye">Your Insider Guide to</div>
@@ -517,9 +517,9 @@ export default function App() {
             {REGIONS.map(r=>(
               <div key={r.id} className="rc" onClick={()=>goRegion(r)}>
                 {r.image
-                  ? <img src={r.image} alt={r.id} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center"}}/>
+                  ? <img src={r.image} alt={r.id} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:r.imgPos||"center"}}/>
                   : <div style={{position:"absolute",inset:0,background:rGrad(r)}}/>}
-                <div style={{position:"absolute",inset:0,background:"linear-gradient(100deg,rgba(0,0,0,0.68) 0%,rgba(0,0,0,0.15) 100%)"}}/>
+                <div style={{position:"absolute",inset:0,background:"linear-gradient(100deg,rgba(0,0,0,0.72) 0%,rgba(0,0,0,0.35) 100%)"}}/>
                 <div className="rc-shim"/>
                 <div className="rc-body"><div className="rc-name">{r.id}</div><div className="rc-sub">{r.tagline}</div></div>
                 <div className="rc-badge">{CATS.reduce((a,c)=>a+forRegion(r.id,c.id).length,0)} places</div>
