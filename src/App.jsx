@@ -6,7 +6,7 @@ const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
   { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", image:"https://i.imgur.com/9V64R8S.jpeg", imgPos:"center 50%" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 40%" },
   { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
   { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 50%" },
 ];
@@ -256,6 +256,55 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .bni-l{font-size:9px;font-weight:500;letter-spacing:0.08em;color:var(--stone);text-transform:uppercase;}
 .bni.on .bni-l{color:var(--gold);}
 
+/* TRIPS PAGE */
+.trips-page{padding:72px 20px 100px;}
+.trips-hero{background:linear-gradient(160deg,#0A1E28,#1D4D5E);border-radius:20px;padding:28px 24px;margin-bottom:24px;}
+.trips-eye{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.trips-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:var(--white);line-height:1.1;margin-bottom:8px;}
+.trips-title em{font-style:italic;color:var(--gold-lt);}
+.trips-sub{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;}
+.trips-section-label{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.itin-card{background:var(--white);border-radius:18px;overflow:hidden;border:1px solid var(--sand);margin-bottom:16px;cursor:pointer;transition:transform 0.18s;}
+.itin-card:active{transform:scale(0.98);}
+.itin-card-header{padding:18px 18px 14px;}
+.itin-card-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.itin-card-region{font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);}
+.itin-card-dur{margin-left:auto;background:var(--ink);color:var(--gold);font-size:9px;font-weight:600;letter-spacing:0.08em;padding:3px 10px;border-radius:20px;}
+.itin-card-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.3;}
+.itin-card-tagline{font-size:12px;font-weight:300;color:var(--stone);line-height:1.5;}
+.itin-card-stops{padding:0 18px 18px;display:flex;gap:6px;flex-wrap:wrap;}
+.itin-card-stop{background:var(--cream);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--stone);}
+.itin-detail{padding:0 0 100px;}
+.itin-detail-hero{background:linear-gradient(160deg,#0A1E28,#1D4D5E);padding:80px 24px 28px;}
+.itin-detail-eye{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.itin-detail-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:6px;}
+.itin-detail-sub{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;}
+.itin-detail-body{padding:24px 20px 0;}
+.timeline{position:relative;padding-left:28px;}
+.timeline::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:1.5px;background:linear-gradient(to bottom,var(--gold),rgba(196,165,90,0.15));}
+.tl-item{position:relative;margin-bottom:14px;}
+.tl-dot{position:absolute;left:-24px;top:16px;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--ivory);}
+.tl-dot.transit{background:var(--sand);}
+.tl-time-label{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.tl-time{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
+.tl-label{font-size:9px;color:var(--stone);letter-spacing:0.08em;}
+.tl-card{background:var(--white);border-radius:14px;overflow:hidden;border:1px solid var(--sand);}
+.tl-card.transit{background:var(--cream);border-style:dashed;}
+.tl-card-img{width:100%;height:120px;object-fit:cover;}
+.tl-card-body{padding:12px 14px;}
+.tl-card-type{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.tl-card-name{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;}
+.tl-card-desc{font-size:12px;font-weight:300;color:var(--stone);line-height:1.65;}
+.tl-card-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.tl-card-tag{background:var(--cream);border-radius:4px;padding:2px 7px;font-size:9px;color:var(--stone);}
+.tl-transit-text{padding:10px 14px;font-size:12px;font-weight:300;color:var(--stone);display:flex;align-items:center;gap:8px;}
+.highlights-box{background:linear-gradient(135deg,rgba(196,165,90,0.08),rgba(196,165,90,0.03));border:1px solid rgba(196,165,90,0.25);border-radius:14px;padding:16px 18px;margin-top:16px;}
+.highlights-title{font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.highlight-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.highlight-item:last-child{margin-bottom:0;}
+.highlight-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);margin-top:5px;flex-shrink:0;}
+.highlight-text{font-size:12px;font-weight:300;color:var(--stone);line-height:1.5;}
+
 /* Block landscape mode on phones */
 @media (orientation: landscape) and (max-width: 900px) {
   .app::before {
@@ -276,9 +325,91 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 }
 `;
 
-const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
+// ── ITINERARIES ───────────────────────────────────────────────
+const ITINERARIES = [
+  {
+    id: "chania-1day",
+    region: "Chania",
+    duration: "Full Day",
+    title: "Komolithi · Balos · Chania Old Town",
+    tagline: "Nature, culture, local cuisine & the magic of Chania by night.",
+    highlights: [
+      "Balos Lagoon — one of Crete's most famous natural wonders",
+      "Komolithi — a unique geological landscape away from the crowds",
+      "Traditional lunch in Kissamos",
+      "Evening walk in Chania's Venetian Harbour",
+      "Dinner in the heart of the Old Town",
+    ],
+    stops: [
+      {
+        time: "08:00",
+        label: "Departure",
+        icon: "🚗",
+        name: "Departure from Chania",
+        description: "Start your day early for the best experience at Balos.",
+        type: "transit",
+      },
+      {
+        time: "09:00 – 09:45",
+        label: "First Stop",
+        icon: "📸",
+        name: "Komolithi — Potamida",
+        description: "Short stop for photos at one of the most unique geological formations in Crete. A beautiful hidden gem of the Kissamos area, perfect for a first introduction to the western part of the island.",
+        type: "Activity",
+        tags: ["Hidden gem","Nature","Photos"],
+      },
+      {
+        time: "10:15 – 15:00",
+        label: "Main Attraction",
+        icon: "🌊",
+        name: "Balos Lagoon",
+        description: "Visit one of Crete's most iconic natural attractions. Free time for swimming, relaxation and unforgettable photos. Enjoy the unique combination of turquoise waters, white sand and breathtaking scenery.",
+        type: "Beach",
+        tags: ["Iconic","Swimming","Scenic"],
+        image: "https://i.imgur.com/qeCcqwv.jpeg",
+      },
+      {
+        time: "15:30 – 17:00",
+        label: "Lunch Stop",
+        icon: "🫒",
+        name: "Kissamos (Kasteli)",
+        description: "Lunch at a local traditional restaurant in the Kissamos area. Free time for a coffee or a short walk around the port of Kissamos.",
+        type: "Restaurant",
+        tags: ["Local","Traditional","Port"],
+      },
+      {
+        time: "18:00",
+        label: "Return",
+        icon: "🚗",
+        name: "Return to Chania",
+        description: "Head back to Chania in time to enjoy the evening.",
+        type: "transit",
+      },
+      {
+        time: "18:30 – 20:00",
+        label: "Evening",
+        icon: "🏛",
+        name: "Chania Old Town",
+        description: "Explore the charming Venetian Harbour. Walk through the picturesque streets of the Old Town. Enjoy the atmosphere, history and local architecture.",
+        type: "Village",
+        tags: ["Venetian Harbour","Historic","Evening walk"],
+      },
+      {
+        time: "20:00 – 22:00",
+        label: "Dinner",
+        icon: "🍽",
+        name: "Tamam Restaurant",
+        description: "End the day with dinner at Tamam, one of the most well-known restaurants in Chania Old Town. A perfect way to experience traditional Cretan and Mediterranean flavours in a historic setting.",
+        type: "Restaurant",
+        tags: ["Traditional","Cretan cuisine","Old Town"],
+      },
+    ],
+  },
+];
 
-// ── GA4 event helper ──────────────────────────────────────────
+
+
+const getCat = id => CATS.find(c=>c.id===id)||CATS[0];
 const trackEvent = (eventName, params = {}) => {
   if (window.gtag) window.gtag("event", eventName, params);
 };
@@ -292,6 +423,7 @@ export default function App() {
   const [detail,setDetail]       = useState(null);
   const [mapPin,setMapPin]       = useState(null);
   const [mapFilter,setMapFilter] = useState("all");
+  const [activeItin,setActiveItin] = useState(null);
   const mapRef                   = useRef(null);
   const gMapRef                  = useRef(null);
   const markersRef               = useRef([]);
@@ -329,7 +461,8 @@ export default function App() {
 
   const scrollTop = () => window.scrollTo({top:0, behavior:"instant"});
 
-  const goHome = () => { setPage("home"); setRegion(null); setDetail(null); setMapPin(null); scrollTop(); };
+  const goHome  = () => { setPage("home"); setRegion(null); setDetail(null); setMapPin(null); setActiveItin(null); scrollTop(); };
+  const goTrips = () => { setPage("trips"); setActiveItin(null); scrollTop(); trackEvent("view_trips"); };
   const goRegion = r => {
     setRegion(r); setPage("region"); setDetail(null); scrollTop();
     trackEvent("view_region", { region: r.id });
@@ -487,9 +620,13 @@ export default function App() {
             <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
           ) : (
             <>
-              <div className="nav-back" onClick={page==="detail"?goBack:goHome}>
+              <div className="nav-back" onClick={()=>{
+                if (page==="detail") goBack();
+                else if (page==="trips" && activeItin) { setActiveItin(null); scrollTop(); }
+                else goHome();
+              }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                {page==="detail"?(region?.id||"Back"):page==="region"?region.id:"Home"}
+                {page==="detail"?(region?.id||"Back"):page==="trips"&&activeItin?"Trips":page==="region"?region.id:"Home"}
               </div>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
             </>
@@ -677,6 +814,83 @@ export default function App() {
           );
         })()}
 
+        {/* TRIPS PAGE */}
+        {page==="trips" && !activeItin && (
+          <div className="trips-page">
+            <div className="trips-hero">
+              <div className="trips-eye">MyGreece ◈ Curated</div>
+              <div className="trips-title">Plan Your<br/><em>Perfect Trip.</em></div>
+              <div className="trips-sub">Hand-picked itineraries combining the best of Crete — nature, culture, food & atmosphere.</div>
+            </div>
+            <div className="trips-section-label">Available Itineraries</div>
+            {ITINERARIES.map(itin=>(
+              <div key={itin.id} className="itin-card" onClick={()=>{ setActiveItin(itin); scrollTop(); trackEvent("view_itinerary",{itinerary:itin.id}); }}>
+                <div className="itin-card-header">
+                  <div className="itin-card-top">
+                    <div className="itin-card-region">📍 {itin.region}</div>
+                    <div className="itin-card-dur">{itin.duration}</div>
+                  </div>
+                  <div className="itin-card-title">{itin.title}</div>
+                  <div className="itin-card-tagline">{itin.tagline}</div>
+                </div>
+                <div className="itin-card-stops">
+                  {itin.stops.filter(s=>s.type!=="transit").map((s,i)=>(
+                    <div key={i} className="itin-card-stop">{s.icon} {s.name}</div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ITINERARY DETAIL */}
+        {page==="trips" && activeItin && (
+          <div className="itin-detail">
+            <div className="itin-detail-hero">
+              <div className="itin-detail-eye">MyGreece ◈ {activeItin.region} · {activeItin.duration}</div>
+              <div className="itin-detail-title">{activeItin.title}</div>
+              <div className="itin-detail-sub">{activeItin.tagline}</div>
+            </div>
+            <div className="itin-detail-body">
+              <div className="timeline">
+                {activeItin.stops.map((stop,i)=>(
+                  <div key={i} className="tl-item">
+                    <div className={`tl-dot ${stop.type==="transit"?"transit":""}`}/>
+                    <div className="tl-time-label">
+                      <div className="tl-time">{stop.icon} {stop.time}</div>
+                      <div className="tl-label">· {stop.label}</div>
+                    </div>
+                    {stop.type==="transit" ? (
+                      <div className="tl-card transit">
+                        <div className="tl-transit-text">{stop.name}</div>
+                      </div>
+                    ) : (
+                      <div className="tl-card">
+                        {stop.image && <img className="tl-card-img" src={stop.image} alt={stop.name}/>}
+                        <div className="tl-card-body">
+                          <div className="tl-card-type">{stop.type}</div>
+                          <div className="tl-card-name">{stop.name}</div>
+                          <div className="tl-card-desc">{stop.description}</div>
+                          {stop.tags && <div className="tl-card-tags">{stop.tags.map((t,j)=><span key={j} className="tl-card-tag">{t}</span>)}</div>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="highlights-box">
+                <div className="highlights-title">✦ Experience Highlights</div>
+                {activeItin.highlights.map((h,i)=>(
+                  <div key={i} className="highlight-item">
+                    <div className="highlight-dot"/>
+                    <div className="highlight-text">{h}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* MAP PAGE */}
         <div style={{display:page==="map"?"block":"none"}} className="map-page">
           <div className="map-filters">
@@ -790,9 +1004,10 @@ export default function App() {
 
         <div className="bnav">
           {[
-            {id:"home", icon:"🏠", label:"Home",  action:goHome},
-            {id:"map",  icon:"🗺",  label:"Map",   action:goMap},
-            {id:"info", icon:"ℹ️",  label:"Info",  action:()=>{ setPage("info"); scrollTop(); }},
+            {id:"home",  icon:"🏠", label:"Home",  action:goHome},
+            {id:"map",   icon:"🗺",  label:"Map",   action:goMap},
+            {id:"trips", icon:"✈️", label:"Trips",  action:goTrips},
+            {id:"info",  icon:"ℹ️",  label:"Info",  action:()=>{ setPage("info"); scrollTop(); }},
           ].map(n=>(
             <div key={n.id} className={`bni ${page===n.id?"on":page==="home"&&n.id==="home"?"on":""}`} onClick={n.action}>
               <div className="bni-i">{n.icon}</div>
