@@ -6,7 +6,7 @@ const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
   { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", image:"https://i.imgur.com/9V64R8S.jpeg", imgPos:"center 50%" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 40%" },
   { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
   { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 50%" },
 ];
@@ -892,7 +892,7 @@ export default function App() {
         )}
 
         {/* MAP PAGE */}
-        <div style={{display:page==="map"?"block":"none"}} className="map-page">
+        <div style={{display:page==="map"?"block":"none",position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"430px",height:"100vh",zIndex:page==="map"?50:-1}} className="map-page">
           <div className="map-filters">
             {[
               {id:"all",label:"All",icon:"🗺"},
