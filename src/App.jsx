@@ -6,7 +6,7 @@ const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
   { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", image:"https://i.imgur.com/9V64R8S.jpeg", imgPos:"center 50%" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 40%" },
   { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
   { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 50%" },
 ];
@@ -633,6 +633,7 @@ export default function App() {
           )}
         </nav>
 
+        <div style={{display: page==="home" || page==="region" || page==="detail" || page==="info" ? "block" : "none"}}>
         {page==="home" && <>
           <div className="hero">
             <img src="https://i.imgur.com/TwfbviO.jpeg" alt="Crete" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 70%"}}/>
@@ -1001,6 +1002,7 @@ export default function App() {
             <div style={{height:80}}/>
           </div>
         )}
+        </div>{/* end page content wrapper */}
 
         <div className="bnav">
           {[
