@@ -49,7 +49,7 @@ const ITINERARIES = [
     stops: [
       { time:"08:00", label:"Departure", icon:"🚗", name:"Departure from Chania", description:"Start your day early for the best experience at Balos.", type:"transit" },
       { time:"09:00 – 09:45", label:"First Stop", icon:"📸", name:"Komolithi — Potamida", description:"Short stop for photos at one of the most unique geological formations in Crete. A beautiful hidden gem of the Kissamos area, perfect for a first introduction to the western part of the island.", type:"Activity", tags:["Hidden gem","Nature","Photos"] },
-      { time:"10:15 – 15:00", label:"Main Attraction", icon:"🌊", name:"Balos Lagoon", description:"Visit one of Crete's most iconic natural attractions. Free time for swimming, relaxation and unforgettable photos. Enjoy the unique combination of turquoise waters, white sand and breathtaking scenery.", type:"Beach", tags:["Iconic","Swimming","Scenic"], image:"https://i.imgur.com/qeCcqwv.jpeg" },
+      { time:"10:15 – 15:00", label:"Main Attraction", icon:"🌊", name:"Balos Lagoon", description:"Visit one of Crete's most iconic natural attractions. Free time for swimming, relaxation and unforgettable photos. Enjoy the unique combination of turquoise waters, white sand and breathtaking scenery.", type:"Beach", tags:["Iconic","Swimming","Scenic"] },
       { time:"15:30 – 17:00", label:"Lunch Stop", icon:"🫒", name:"Kissamos (Kasteli)", description:"Lunch at a local traditional restaurant in the Kissamos area. Free time for a coffee or a short walk around the port of Kissamos.", type:"Restaurant", tags:["Local","Traditional","Port"] },
       { time:"18:00", label:"Return", icon:"🚗", name:"Return to Chania", description:"Head back to Chania in time to enjoy the evening.", type:"transit" },
       { time:"18:30 – 20:00", label:"Evening", icon:"🏛", name:"Chania Old Town", description:"Explore the charming Venetian Harbour. Walk through the picturesque streets of the Old Town. Enjoy the atmosphere, history and local architecture.", type:"Village", tags:["Venetian Harbour","Historic","Evening walk"] },
@@ -248,7 +248,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .tl-label-text{font-size:9px;color:var(--stone);letter-spacing:0.08em;}
 .tl-card{background:var(--white);border-radius:14px;overflow:hidden;border:1px solid var(--sand);}
 .tl-card.transit{background:var(--cream);border-style:dashed;}
-.tl-card-img{width:100%;height:120px;object-fit:cover;}
+.tl-card-img{width:100%;height:120px;object-fit:cover;background:var(--cream);display:block;}
 .tl-card-body{padding:12px 14px;}
 .tl-card-type{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
 .tl-card-name{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;}
@@ -609,7 +609,7 @@ export default function App() {
                       <div className="tl-card transit"><div className="tl-transit-body">{stop.name}</div></div>
                     ) : (
                       <div className="tl-card">
-                        {stop.image&&<img className="tl-card-img" src={stop.image} alt={stop.name}/>}
+                        {stop.image&&<div style={{background:"var(--cream)",width:"100%",height:120,overflow:"hidden"}}><img className="tl-card-img" src={stop.image} alt={stop.name} onError={e=>e.target.parentElement.style.display="none"}/></div>}
                         <div className="tl-card-body">
                           <div className="tl-card-type">{stop.type}</div>
                           <div className="tl-card-name">{stop.name}</div>
