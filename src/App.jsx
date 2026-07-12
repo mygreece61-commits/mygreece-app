@@ -56,6 +56,57 @@ const ITINERARIES = [
       { time:"20:00 – 22:00", label:"Dinner", icon:"🍽", name:"Tamam Restaurant", description:"End the day with dinner at Tamam, one of the most well-known restaurants in Chania Old Town. A perfect way to experience traditional Cretan and Mediterranean flavours in a historic setting.", type:"Restaurant", tags:["Traditional","Cretan cuisine","Old Town"] },
     ],
   },
+  {
+    id: "rethymno-1day",
+    region: "Rethymno",
+    duration: "Full Day",
+    title: "Mili Gorge · Spili · Margarites · Old Town",
+    tagline: "Hidden gorges, pottery villages & authentic Cretan countryside.",
+    highlights: [
+      "Mili Gorge — abandoned watermills and lush hidden scenery",
+      "Spili Village — famous Venetian lion-head fountains",
+      "Authentic Cretan lunch in the countryside",
+      "Margarites — Crete's most famous pottery village",
+      "Kourtaliotiko Gorge — one of Crete's most dramatic landscapes",
+      "Evening stroll through Rethymno's Venetian Harbour",
+    ],
+    stops: [
+      { time:"09:00", label:"Departure", icon:"🚗", name:"Departure from Rethymno", description:"Start your day early and head into the Cretan countryside.", type:"transit" },
+      { time:"09:30 – 10:45", label:"First Stop", icon:"🌿", name:"Mili Gorge", description:"Begin your day with a peaceful walk through one of Rethymno's hidden gems. Discover abandoned watermills, lush vegetation and the tranquil atmosphere of this historic gorge.", type:"Activity", tags:["Hidden gem","Nature","Walking"] },
+      { time:"11:15 – 12:30", label:"Village Stop", icon:"⛪", name:"Spili Village", description:"Explore the charming village of Spili, famous for its Venetian lion-head fountains, traditional cafés and local shops selling Cretan products.", type:"Village", tags:["Venetian fountains","Traditional","Local shops"] },
+      { time:"13:00 – 14:30", label:"Lunch", icon:"🍽", name:"Traditional Taverna", description:"Enjoy authentic Cretan cuisine in the heart of the countryside, prepared with fresh local ingredients.", type:"Restaurant", tags:["Cretan cuisine","Local","Countryside"] },
+      { time:"15:00 – 16:30", label:"Pottery Village", icon:"🏺", name:"Margarites Village", description:"Visit Crete's most famous pottery village, meet local artisans and stroll through its picturesque alleys filled with ceramic workshops.", type:"Village", tags:["Pottery","Artisans","Traditional"] },
+      { time:"17:00 – 18:00", label:"Natural Landmark", icon:"🏔", name:"Kourtaliotiko Gorge", description:"Stop at one of Crete's most spectacular natural landmarks to admire the dramatic scenery and capture unforgettable photos.", type:"Activity", tags:["Scenic","Nature","Photography"] },
+      { time:"18:45", label:"Return", icon:"🚗", name:"Return to Rethymno", description:"Head back to Rethymno for a relaxed evening in the Old Town.", type:"transit" },
+      { time:"19:00 – 20:00", label:"Evening", icon:"🏛", name:"Rethymno Old Town", description:"Walk through the Venetian Harbour, discover the historic streets and enjoy the lively atmosphere of the Old Town.", type:"Village", tags:["Venetian Harbour","Historic","Evening walk"] },
+      { time:"20:00", label:"Dinner", icon:"🍽", name:"To Pigadi or Castelo Rethymno", description:"Choose between To Pigadi or Castelo Rethymno for an authentic Cretan dining experience in the heart of the Old Town.", type:"Restaurant", tags:["Traditional","Cretan cuisine","Old Town"] },
+    ],
+  },
+  {
+    id: "heraklion-1day",
+    region: "Heraklion",
+    duration: "Full Day",
+    title: "Archanes · Zaros · Agia Pelagia · Heraklion",
+    tagline: "Villages, mountain scenery, beach & the heart of Heraklion.",
+    highlights: [
+      "Archanes — one of Crete's most beautiful traditional villages",
+      "Zaros & Lake Votomos — peaceful scenery at the foothills of Psiloritis",
+      "Authentic Cretan lunch at a countryside taverna",
+      "Agia Pelagia Beach — crystal-clear waters near Heraklion",
+      "Venetian Walls & Koules Fortress — history by the harbour",
+      "Dinner at Peskesi or Parasties in the heart of the city",
+    ],
+    stops: [
+      { time:"09:00", label:"Departure", icon:"🚗", name:"Departure from Heraklion", description:"Head south into the Cretan countryside for a day of villages, nature and beach.", type:"transit" },
+      { time:"09:30 – 11:00", label:"First Stop", icon:"⛪", name:"Archanes Village", description:"Explore one of Crete's most beautiful traditional villages, stroll through its colourful streets and discover local cafés and artisan shops.", type:"Village", tags:["Traditional","Colourful streets","Local shops"] },
+      { time:"11:30 – 13:00", label:"Village & Lake", icon:"🏔", name:"Zaros & Lake Votomos", description:"Visit the picturesque village of Zaros, enjoy a relaxing walk around Lake Votomos and admire the stunning scenery at the foothills of Mount Psiloritis.", type:"Village", tags:["Lake","Scenic","Psiloritis"] },
+      { time:"13:15 – 14:45", label:"Lunch", icon:"🍽", name:"Traditional Taverna — Zaros", description:"Enjoy authentic Cretan cuisine at a traditional taverna in Zaros or the surrounding area.", type:"Restaurant", tags:["Cretan cuisine","Local","Countryside"] },
+      { time:"15:30 – 17:00", label:"Beach", icon:"🌊", name:"Agia Pelagia Beach", description:"Relax by the crystal-clear waters of Agia Pelagia, one of the most popular beaches near Heraklion. Swim, unwind by the sea or enjoy a refreshing drink at a beachfront café.", type:"Beach", tags:["Swimming","Popular","Beachfront café"] },
+      { time:"17:30 – 18:30", label:"Historic Walk", icon:"🏛", name:"Heraklion Walls & Venetian Harbour", description:"Walk along the impressive Venetian Walls and admire the historic Koules Fortress overlooking the harbour.", type:"Activity", tags:["Venetian Walls","Koules Fortress","Historic"] },
+      { time:"18:30 – 19:30", label:"City Centre", icon:"🏙", name:"Heraklion City Center", description:"Explore Lion Square, browse local shops and experience the lively atmosphere of the city centre.", type:"Activity", tags:["Lion Square","Shopping","Lively"] },
+      { time:"20:00", label:"Dinner", icon:"🍽", name:"Peskesi or Parasties", description:"End your day with dinner at Peskesi or Parasties, where you can enjoy authentic Cretan cuisine prepared with fresh local ingredients.", type:"Restaurant", tags:["Cretan cuisine","Fresh ingredients","City centre"] },
+    ],
+  },
 ];
 
 const css = `
@@ -486,7 +537,7 @@ export default function App() {
         {page==="region" && region && (
           <>
             <div className="rh">
-              {region.image && <img src={region.image} alt={region.id} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:region.imgPos||"center",filter:"blur(6px) brightness(0.45)",transform:"scale(1.05)"}}/>}
+              {region.image && <img src={region.image} alt={region.id} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:region.imgPos||"center",filter:"blur(3px) brightness(0.5)",transform:"scale(1.05)"}}/>}
               {!region.image && <div style={{position:"absolute",inset:0,background:rGrad(region)}}/>}
               <div className="rh-glow"/><div className="rh-fade"/>
               <div className="rh-c">
