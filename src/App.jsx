@@ -6,7 +6,7 @@ const GA_ID = "G-YR7XSTZ1G5";
 
 const REGIONS = [
   { id:"Chania",    tagline:"Old Harbour & White Mountains",     color1:"#0A1E28", color2:"#1D5A6B", image:"https://i.imgur.com/9V64R8S.jpeg", imgPos:"center 50%" },
-  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/m50yE9s.jpeg", imgPos:"center 40%" },
+  { id:"Rethymno",  tagline:"Venetian Fortresses & Monasteries", color1:"#3A1A0A", color2:"#6B3A20", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 40%" },
   { id:"Heraklion", tagline:"Minoan Palaces & Vineyards",        color1:"#0A2A18", color2:"#1D5A36", image:"https://i.imgur.com/w7rkNoJ.jpeg", imgPos:"center 30%" },
   { id:"Lasithi",   tagline:"Windmills, Caves & Wild East",      color1:"#1A0A38", color2:"#3A206B", image:"https://i.imgur.com/bW7EXfe.jpeg", imgPos:"center 50%" },
 ];
@@ -215,7 +215,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .info-card-body ul li{margin-bottom:5px;}
 .info-contact-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:14px;background:var(--ink);color:var(--gold);font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;margin-top:8px;}
 
-.trips-page{padding:72px 20px 100px;}
+.trips-page{padding:72px 20px 100px;background:var(--ivory);min-height:100vh;}
 .trips-hero{background:linear-gradient(160deg,#0A1E28,#1D4D5E);border-radius:20px;padding:28px 24px;margin-bottom:24px;}
 .trips-eye{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
 .trips-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;color:var(--white);line-height:1.1;margin-bottom:8px;}
@@ -232,7 +232,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .itin-card-tagline{font-size:12px;font-weight:300;color:var(--stone);line-height:1.5;}
 .itin-card-stops{padding:0 18px 18px;display:flex;gap:6px;flex-wrap:wrap;}
 .itin-stop-pill{background:var(--cream);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--stone);}
-.itin-detail{padding:0 0 100px;}
+.itin-detail{padding:0 0 100px;background:var(--ivory);min-height:100vh;}
 .itin-detail-hero{background:linear-gradient(160deg,#0A1E28,#1D4D5E);padding:80px 24px 28px;}
 .itin-detail-eye{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
 .itin-detail-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--white);line-height:1.2;margin-bottom:6px;}
@@ -569,29 +569,6 @@ export default function App() {
           );
         })()}
 
-        {/* MAP — always rendered to preserve MapLibre instance */}
-        <div style={{display:page==="map"?"block":"none"}} className="map-page">
-            <div className="map-filters">
-              {[{id:"all",label:"All",icon:"🗺"},{id:"Beach",label:"Beaches",icon:"🌊"},{id:"Restaurant",label:"Food",icon:"🫒"},{id:"Hotel",label:"Stay",icon:"🏡"},{id:"Activity",label:"Activities",icon:"🧗"},{id:"Village",label:"Villages",icon:"⛪"}].map(f=>(
-                <div key={f.id} className={`map-chip ${mapFilter===f.id?"on":""}`} onClick={()=>{setMapFilter(f.id);trackEvent("map_filter",{filter:f.id});}}><span>{f.icon}</span>{f.label}</div>
-              ))}
-            </div>
-            <div className="map-container"><div ref={mapRef} className="map-div"/></div>
-            {mapPin && page==="map" && (
-              <div className="map-card">
-                <div className="map-card-img">{mapPin.image?<img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>:<span style={{fontSize:24}}>{mapPin.emoji||getCat(mapPin.category).icon}</span>}</div>
-                <div className="map-card-info">
-                  <div className="map-card-name">{mapPin.name}</div>
-                  <div className="map-card-meta">📍 {mapPin.subarea}, {mapPin.area}</div>
-                  <div className="map-card-tags">{mapPin.tags.slice(0,3).map((t,i)=><span key={i} className="map-card-tag">{t}</span>)}</div>
-                </div>
-                <div className="map-card-arrow" onClick={()=>{setDetail(mapPin);setPage("detail");setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);trackEvent("view_place",{place_name:mapPin.name,place_category:mapPin.category,source:"map"});}} style={{background:"#18181A",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12H19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 5L19 12L12 19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </div>
-              </div>
-            )}
-          </div>
-
         {/* TRIPS LIST */}
         {page==="trips" && !activeItin && (
           <div className="trips-page">
@@ -654,7 +631,28 @@ export default function App() {
           </div>
         )}
 
-        {/* INFO */}
+        {/* MAP — always rendered to preserve MapLibre instance */}
+        <div style={{visibility:page==="map"?"visible":"hidden",pointerEvents:page==="map"?"auto":"none",position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"430px",height:"100vh",zIndex:page==="map"?50:0}} className="map-page">
+          <div className="map-filters">
+            {[{id:"all",label:"All",icon:"🗺"},{id:"Beach",label:"Beaches",icon:"🌊"},{id:"Restaurant",label:"Food",icon:"🫒"},{id:"Hotel",label:"Stay",icon:"🏡"},{id:"Activity",label:"Activities",icon:"🧗"},{id:"Village",label:"Villages",icon:"⛪"}].map(f=>(
+              <div key={f.id} className={`map-chip ${mapFilter===f.id?"on":""}`} onClick={()=>{setMapFilter(f.id);trackEvent("map_filter",{filter:f.id});}}><span>{f.icon}</span>{f.label}</div>
+            ))}
+          </div>
+          <div className="map-container"><div ref={mapRef} className="map-div"/></div>
+          {mapPin && page==="map" && (
+            <div className="map-card">
+              <div className="map-card-img">{mapPin.image?<img src={mapPin.image} alt={mapPin.name} onError={e=>e.target.style.display="none"}/>:<span style={{fontSize:24}}>{mapPin.emoji||getCat(mapPin.category).icon}</span>}</div>
+              <div className="map-card-info">
+                <div className="map-card-name">{mapPin.name}</div>
+                <div className="map-card-meta">📍 {mapPin.subarea}, {mapPin.area}</div>
+                <div className="map-card-tags">{mapPin.tags.slice(0,3).map((t,i)=><span key={i} className="map-card-tag">{t}</span>)}</div>
+              </div>
+              <div className="map-card-arrow" onClick={()=>{setDetail(mapPin);setPage("detail");setRegion(REGIONS.find(r=>r.id===mapPin.area)||REGIONS[0]);trackEvent("view_place",{place_name:mapPin.name,place_category:mapPin.category,source:"map"});}} style={{background:"#18181A",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12H19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M12 5L19 12L12 19" stroke="#C4A55A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </div>
+            </div>
+          )}
+        </div>
         {page==="info" && (
           <div className="info-page">
             <div className="info-hero">
