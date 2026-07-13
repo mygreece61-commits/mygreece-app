@@ -465,6 +465,28 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .trips-title em{font-style:italic;color:var(--gold-lt);}
 .trips-sub{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;}
 .trips-label{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.picker-section{margin-bottom:20px;}
+.picker-label{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.dur-row{display:flex;gap:8px;}
+.dur-btn{flex:1;padding:14px 6px;border-radius:14px;border:1.5px solid var(--sand);background:var(--white);font-family:'Jost',sans-serif;font-size:11px;font-weight:500;color:var(--stone);cursor:pointer;text-align:center;transition:all 0.18s;}
+.dur-btn.on{background:var(--ink);color:var(--gold);border-color:var(--ink);}
+.dur-num{font-family:'Playfair Display',serif;font-size:24px;color:inherit;display:block;margin-bottom:2px;}
+.vibe-row{display:flex;gap:8px;}
+.vibe-btn{flex:1;padding:14px 8px;border-radius:14px;border:1.5px solid var(--sand);background:var(--white);font-family:'Jost',sans-serif;font-size:11px;font-weight:500;color:var(--stone);cursor:pointer;text-align:center;transition:all 0.18s;}
+.vibe-btn.on{background:var(--ink);color:var(--gold);border-color:var(--ink);}
+.vibe-icon{font-size:20px;display:block;margin-bottom:6px;}
+.reg-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.reg-row::-webkit-scrollbar{display:none;}
+.reg-pill{flex-shrink:0;padding:9px 18px;border-radius:24px;border:1.5px solid var(--sand);background:var(--white);font-family:'Jost',sans-serif;font-size:12px;font-weight:500;color:var(--stone);cursor:pointer;transition:all 0.18s;}
+.reg-pill.on{background:var(--ink);color:var(--gold);border-color:var(--ink);}
+.picker-divider{height:1px;background:var(--sand);margin:24px 0;}
+.itin-inline-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.itin-inline-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;color:var(--ink);}
+.itin-inline-badge{background:var(--gold);color:var(--ink);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:5px 12px;border-radius:20px;}
+.coming-soon{text-align:center;padding:40px 20px;}
+.coming-soon-icon{font-size:40px;margin-bottom:12px;}
+.coming-soon-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);margin-bottom:8px;}
+.coming-soon-sub{font-size:13px;font-weight:300;color:var(--stone);line-height:1.6;}
 .itin-card{background:var(--white);border-radius:18px;overflow:hidden;border:1px solid var(--sand);margin-bottom:16px;cursor:pointer;transition:transform 0.18s;}
 .itin-card:active{transform:scale(0.98);}
 .itin-card-header{padding:18px 18px 14px;}
@@ -545,6 +567,9 @@ export default function App() {
   const [mapPin,setMapPin]       = useState(null);
   const [mapFilter,setMapFilter] = useState("all");
   const [activeItin,setActiveItin] = useState(null);
+  const [tripsRegion,setTripsRegion] = useState("Chania");
+  const [tripsDuration,setTripsDuration] = useState(1);
+  const [tripsVibe,setTripsVibe] = useState("Beach");
   const mapRef    = useRef(null);
   const gMapRef   = useRef(null);
   const markersRef = useRef([]);
@@ -682,9 +707,9 @@ export default function App() {
             <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
           ) : (
             <>
-              <div className="nav-back" onClick={()=>{ if(page==="detail") goBack(); else if(page==="trips"&&activeItin){setActiveItin(null);scrollTop();} else goHome(); }}>
+              <div className="nav-back" onClick={()=>{ if(page==="detail") goBack(); else goHome(); }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-                {page==="detail"?(region?.id||"Back"):page==="trips"&&activeItin?"Trips":page==="region"?region.id:"Home"}
+                {page==="detail"?(region?.id||"Back"):page==="region"?region.id:"Home"}
               </div>
               <div className="logo" onClick={goHome}><span className="logo-my">My</span><span className="logo-gr">Greece</span></div>
             </>
@@ -812,67 +837,95 @@ export default function App() {
           );
         })()}
 
-        {/* TRIPS LIST */}
-        {page==="trips" && !activeItin && (
-          <div className="trips-page">
-            <div className="trips-hero">
-              <div className="trips-eye">MyGreece ◈ Curated</div>
-              <div className="trips-title">Plan Your<br/><em>Perfect Trip.</em></div>
-              <div className="trips-sub">Hand-picked itineraries combining the best of Crete — nature, culture, food & atmosphere.</div>
-            </div>
-            <div className="trips-label">Available Itineraries</div>
-            {ITINERARIES.map(itin=>(
-              <div key={itin.id} className="itin-card" onClick={()=>{setActiveItin(itin);scrollTop();trackEvent("view_itinerary",{itinerary:itin.id});}}>
-                <div className="itin-card-header">
-                  <div className="itin-card-top"><div className="itin-card-region">📍 {itin.region}</div><div className="itin-card-dur">{itin.duration}</div></div>
-                  <div className="itin-card-title">{itin.title}</div>
-                  <div className="itin-card-tagline">{itin.tagline}</div>
-                </div>
-                <div className="itin-card-stops">{itin.stops.filter(s=>s.type!=="transit").map((s,i)=><div key={i} className="itin-stop-pill">{s.icon} {s.name}</div>)}</div>
+        {/* TRIPS PAGE — picker UI */}
+        {page==="trips" && (()=>{
+          const regionItins = ITINERARIES.filter(i=>i.region===tripsRegion);
+          const vibeIndex = tripsVibe==="Beach"?0:tripsVibe==="Culture"?1:2;
+          const matchedItin = regionItins[vibeIndex] || regionItins[0];
+          return (
+            <div className="trips-page">
+              <div className="trips-hero">
+                <div className="trips-eye">MyGreece ◈ Curated</div>
+                <div className="trips-title">Plan Your<br/><em>Perfect Trip.</em></div>
+                <div className="trips-sub">Choose your region, duration & vibe — we'll build your day.</div>
               </div>
-            ))}
-          </div>
-        )}
 
-        {/* ITINERARY DETAIL */}
-        {page==="trips" && activeItin && (
-          <div className="itin-detail">
-            <div className="itin-detail-hero">
-              <div className="itin-detail-eye">MyGreece ◈ {activeItin.region} · {activeItin.duration}</div>
-              <div className="itin-detail-title">{activeItin.title}</div>
-              <div className="itin-detail-sub">{activeItin.tagline}</div>
-            </div>
-            <div className="itin-detail-body">
-              <div className="timeline">
-                {activeItin.stops.map((stop,i)=>(
-                  <div key={i} className="tl-item">
-                    <div className={`tl-dot${stop.type==="transit"?" transit":""}`}/>
-                    <div className="tl-time-row"><div className="tl-time">{stop.icon} {stop.time}</div><div className="tl-label-text">· {stop.label}</div></div>
-                    {stop.type==="transit" ? (
-                      <div className="tl-card transit"><div className="tl-transit-body">{stop.name}</div></div>
-                    ) : (
-                      <div className="tl-card">
-                        {stop.image&&<div style={{background:"var(--cream)",width:"100%",height:120,overflow:"hidden"}}><img className="tl-card-img" src={stop.image} alt={stop.name} onError={e=>e.target.parentElement.style.display="none"}/></div>}
-                        <div className="tl-card-body">
-                          <div className="tl-card-type">{stop.type}</div>
-                          <div className="tl-card-name">{stop.name}</div>
-                          <div className="tl-card-desc">{stop.description}</div>
-                          {stop.tags&&<div className="tl-card-tags">{stop.tags.map((t,j)=><span key={j} className="tl-card-tag">{t}</span>)}</div>}
-                        </div>
-                      </div>
-                    )}
+              <div className="picker-section">
+                <div className="picker-label">How long is your stay?</div>
+                <div className="dur-row">
+                  {[{n:1,l:"Day"},{n:2,l:"Days"},{n:3,l:"Days"},{n:4,l:"Days"}].map(d=>(
+                    <div key={d.n} className={`dur-btn ${tripsDuration===d.n?"on":""}`} onClick={()=>setTripsDuration(d.n)}>
+                      <span className="dur-num">{d.n}</span>{d.l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="picker-section">
+                <div className="picker-label">What's your vibe?</div>
+                <div className="vibe-row">
+                  {[{v:"Beach",icon:"🌊"},{v:"Culture",icon:"🏛"},{v:"Mixed",icon:"✨"}].map(({v,icon})=>(
+                    <div key={v} className={`vibe-btn ${tripsVibe===v?"on":""}`} onClick={()=>setTripsVibe(v)}>
+                      <span className="vibe-icon">{icon}</span>{v}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="picker-section">
+                <div className="picker-label">Which region?</div>
+                <div className="reg-row">
+                  {["Chania","Rethymno","Heraklion","Lasithi"].map(r=>(
+                    <div key={r} className={`reg-pill ${tripsRegion===r?"on":""}`} onClick={()=>setTripsRegion(r)}>{r}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="picker-divider"/>
+
+              {tripsDuration > 1 ? (
+                <div className="coming-soon">
+                  <div className="coming-soon-icon">🗓</div>
+                  <div className="coming-soon-title">Coming Soon</div>
+                  <div className="coming-soon-sub">Multi-day itineraries are being curated.<br/>Check back soon for {tripsDuration}-day trips across Crete.</div>
+                </div>
+              ) : matchedItin ? (
+                <>
+                  <div className="itin-inline-header">
+                    <div className="itin-inline-title">Your Day in {tripsRegion}</div>
+                    <div className="itin-inline-badge">{tripsVibe} Vibe</div>
                   </div>
-                ))}
-              </div>
-              <div className="highlights-box">
-                <div className="highlights-title">✦ Experience Highlights</div>
-                {activeItin.highlights.map((h,i)=>(
-                  <div key={i} className="highlight-row"><div className="highlight-dot"/><div className="highlight-text">{h}</div></div>
-                ))}
-              </div>
+                  <div className="timeline">
+                    {matchedItin.stops.map((stop,i)=>(
+                      <div key={i} className="tl-item">
+                        <div className={`tl-dot${stop.type==="transit"?" transit":""}`}/>
+                        <div className="tl-time-row"><div className="tl-time">{stop.icon} {stop.time}</div><div className="tl-label-text">· {stop.label}</div></div>
+                        {stop.type==="transit" ? (
+                          <div className="tl-card transit"><div className="tl-transit-body">{stop.name}</div></div>
+                        ) : (
+                          <div className="tl-card">
+                            <div className="tl-card-body">
+                              <div className="tl-card-type">{stop.type}</div>
+                              <div className="tl-card-name">{stop.name}</div>
+                              <div className="tl-card-desc">{stop.description}</div>
+                              {stop.tags&&<div className="tl-card-tags">{stop.tags.map((t,j)=><span key={j} className="tl-card-tag">{t}</span>)}</div>}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="highlights-box">
+                    <div className="highlights-title">✦ Experience Highlights</div>
+                    {matchedItin.highlights.map((h,i)=>(
+                      <div key={i} className="highlight-row"><div className="highlight-dot"/><div className="highlight-text">{h}</div></div>
+                    ))}
+                  </div>
+                </>
+              ) : null}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* MAP — always rendered to preserve MapLibre instance */}
         <div style={{visibility:page==="map"?"visible":"hidden",pointerEvents:page==="map"?"auto":"none",position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:"100%",maxWidth:"430px",height:"100vh",zIndex:page==="map"?50:0}} className="map-page">
