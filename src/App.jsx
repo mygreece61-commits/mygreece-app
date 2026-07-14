@@ -47,7 +47,7 @@ const ITINERARIES = [
       {time:"15:30 – 17:00",label:"Lunch Stop",icon:"🫒",name:"Kissamos (Kasteli)",description:"Lunch at a local traditional restaurant in the Kissamos area. Free time for a coffee or a short walk around the port of Kissamos.",type:"Restaurant",tags:["Local","Traditional","Port"]},
       {time:"18:00",label:"Return",icon:"🚗",name:"Return to Chania",description:"Head back to Chania in time to enjoy the evening.",type:"transit"},
       {time:"18:30 – 20:00",label:"Evening",icon:"🏛",name:"Chania Old Town",description:"Explore the charming Venetian Harbour. Walk through the picturesque streets of the Old Town. Enjoy the atmosphere, history and local architecture.",type:"Village",tags:["Venetian Harbour","Historic","Evening walk"]},
-      {time:"20:00 – 22:00",label:"Dinner",icon:"🍽",name:"Tamam Restaurant",description:"End the day with dinner at Tamam, one of the most well-known restaurants in Chania Old Town.",type:"Restaurant",tags:["Traditional","Cretan cuisine","Old Town"]},
+      {time:"20:00 – 22:00",label:"Dinner",icon:"🍽",name:"Dinner in Chania Old Town",description:"End the day at one of the many traditional tavernas in Chania Old Town, each offering authentic Cretan and Mediterranean flavours in a historic setting.",type:"Restaurant",tags:["Traditional","Cretan cuisine","Old Town"]},
     ],
   },
   {
@@ -115,7 +115,7 @@ const ITINERARIES = [
       {time:"17:00 – 18:00",label:"Natural Landmark",icon:"🏔",name:"Kourtaliotiko Gorge",description:"Stop at one of Crete's most spectacular natural landmarks to admire the dramatic scenery and capture unforgettable photos.",type:"Activity",tags:["Scenic","Nature","Photography"]},
       {time:"18:45",label:"Return",icon:"🚗",name:"Return to Rethymno",description:"Head back to Rethymno for a relaxed evening in the Old Town.",type:"transit"},
       {time:"19:00 – 20:00",label:"Evening",icon:"🏛",name:"Rethymno Old Town",description:"Walk through the Venetian Harbour, discover the historic streets and enjoy the lively atmosphere of the Old Town.",type:"Village",tags:["Venetian Harbour","Historic","Evening walk"]},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"To Pigadi or Castelo Rethymno",description:"Choose between To Pigadi or Castelo Rethymno for an authentic Cretan dining experience in the heart of the Old Town.",type:"Restaurant",tags:["Traditional","Cretan cuisine","Old Town"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Rethymno Old Town",description:"Choose from one of the many traditional tavernas in Rethymno Old Town, each offering authentic Cretan cuisine in a charming historic setting.",type:"Restaurant",tags:["Traditional","Cretan cuisine","Old Town"]},
     ],
   },
   {
@@ -182,7 +182,7 @@ const ITINERARIES = [
       {time:"15:30 – 17:00",label:"Beach",icon:"🌊",name:"Agia Pelagia Beach",description:"Relax by the crystal-clear waters of Agia Pelagia, one of the most popular beaches near Heraklion.",type:"Beach",tags:["Swimming","Popular","Beachfront café"]},
       {time:"17:30 – 18:30",label:"Historic Walk",icon:"🏛",name:"Heraklion Walls & Venetian Harbour",description:"Walk along the impressive Venetian Walls and admire the historic Koules Fortress overlooking the harbour.",type:"Activity",tags:["Venetian Walls","Koules Fortress","Historic"]},
       {time:"18:30 – 19:30",label:"City Centre",icon:"🏙",name:"Heraklion City Center",description:"Explore Lion Square, browse local shops and experience the lively atmosphere of the city centre.",type:"Activity",tags:["Lion Square","Shopping","Lively"]},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"Peskesi or Parasties",description:"End your day with dinner at Peskesi or Parasties, where you can enjoy authentic Cretan cuisine prepared with fresh local ingredients.",type:"Restaurant",tags:["Cretan cuisine","Fresh ingredients","City centre"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Heraklion",description:"End your day at one of the many traditional tavernas in Heraklion city centre, offering authentic Cretan cuisine prepared with fresh local ingredients.",type:"Restaurant",tags:["Cretan cuisine","Fresh ingredients","City centre"]},
     ],
   },
   {
@@ -248,7 +248,7 @@ const ITINERARIES = [
       {time:"13:45 – 15:15",label:"Lunch",icon:"🍽",name:"Seafood Taverna — Makrigialos",description:"Enjoy fresh seafood or traditional Cretan cuisine at a seaside taverna overlooking the Libyan Sea.",type:"Restaurant",tags:["Seafood","Libyan Sea","Seaside"]},
       {time:"15:30 – 16:30",label:"Beach",icon:"🌊",name:"Makrigialos Beach",description:"Free time for swimming, a coffee by the beach or a relaxing walk along the coast.",type:"Beach",tags:["Swimming","Coffee","Relaxing"]},
       {time:"17:45 – 19:00",label:"Town",icon:"🏙",name:"Agios Nikolaos",description:"Explore the picturesque town, stroll around Lake Voulismeni and enjoy the vibrant waterfront.",type:"Village",tags:["Lake Voulismeni","Waterfront","Picturesque"]},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"Olondi Restaurant — Elounda",description:"End the day with an unforgettable dinner overlooking Mirabello Bay, enjoying authentic Cretan and Mediterranean flavours.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Elounda",description:"End the day at one of the many traditional tavernas in Elounda, enjoying authentic Cretan and Mediterranean flavours overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
     ],
   },
   {
@@ -264,7 +264,7 @@ const ITINERARIES = [
       {time:"14:00 – 15:30",label:"Lunch",icon:"🍽",name:"Sitia Waterfront Taverna",description:"Enjoy lunch at a traditional taverna and take a leisurely walk along the picturesque waterfront.",type:"Restaurant",tags:["Traditional","Waterfront","Leisurely"]},
       {time:"17:00",label:"Drive",icon:"🚗",name:"Return towards Agios Nikolaos",description:"Head back west along the northern coast.",type:"transit"},
       {time:"18:00 – 19:00",label:"Town",icon:"🏙",name:"Agios Nikolaos",description:"Explore Lake Voulismeni and the beautiful harbour before your evening meal.",type:"Village",tags:["Lake Voulismeni","Harbour","Charming"]},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"Olondi Restaurant — Elounda",description:"End the day with authentic Cretan and Mediterranean flavours overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Elounda",description:"End the day with authentic Cretan and Mediterranean flavours at one of the many traditional tavernas in Elounda overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
     ],
   },
   {
@@ -280,7 +280,7 @@ const ITINERARIES = [
       {time:"14:00 – 15:30",label:"Lunch",icon:"🍽",name:"Seaside Taverna — Elounda",description:"Enjoy authentic Cretan cuisine at a traditional seaside taverna.",type:"Restaurant",tags:["Cretan cuisine","Seaside","Traditional"]},
       {time:"15:45 – 17:30",label:"Town",icon:"🏙",name:"Elounda Waterfront",description:"Take a relaxing walk along the waterfront, browse local shops and enjoy the cosmopolitan atmosphere.",type:"Village",tags:["Cosmopolitan","Waterfront","Local shops"]},
       {time:"18:00 – 19:00",label:"Town",icon:"🏙",name:"Agios Nikolaos",description:"Free time to explore the town before dinner.",type:"Village",tags:["Lake Voulismeni","Evening","Explore"]},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"Olondi Restaurant — Elounda",description:"End the day with dinner at Olondi Restaurant overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Elounda",description:"End the day with dinner at one of the many traditional tavernas in Elounda overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
     ],
   },
   {
@@ -296,7 +296,7 @@ const ITINERARIES = [
       {time:"14:15 – 15:45",label:"Lunch",icon:"🍽",name:"Traditional Taverna — Sitia",description:"Taste authentic Cretan cuisine at a traditional seaside taverna.",type:"Restaurant",tags:["Traditional","Seaside","Cretan cuisine"]},
       {time:"16:00 – 17:30",label:"Waterfront",icon:"🏙",name:"Sitia Waterfront",description:"Take a relaxing walk along the harbour and enjoy the charming atmosphere of eastern Crete.",type:"Village",tags:["Harbour","Relaxing","Charming"]},
       {time:"19:00",label:"Drive",icon:"🚗",name:"Return towards Agios Nikolaos",description:"Head back west along the northern coast.",type:"transit"},
-      {time:"20:00",label:"Dinner",icon:"🍽",name:"Olondi Restaurant — Elounda",description:"End your day with authentic Cretan and Mediterranean cuisine overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
+      {time:"20:00",label:"Dinner",icon:"🍽",name:"Dinner in Elounda",description:"End your day with authentic Cretan and Mediterranean cuisine at one of the many traditional tavernas in Elounda overlooking Mirabello Bay.",type:"Restaurant",tags:["Mirabello Bay","Mediterranean","Elounda"]},
     ],
   },
 ];
