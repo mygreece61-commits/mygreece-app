@@ -569,7 +569,6 @@ export default function App() {
   const [activeItin,setActiveItin] = useState(null);
   const [tripsRegion,setTripsRegion] = useState("Chania");
   const [tripsDuration,setTripsDuration] = useState(1);
-  const [tripsVibe,setTripsVibe] = useState("Beach");
   const mapRef    = useRef(null);
   const gMapRef   = useRef(null);
   const markersRef = useRef([]);
@@ -840,14 +839,13 @@ export default function App() {
         {/* TRIPS PAGE — picker UI */}
         {page==="trips" && (()=>{
           const regionItins = ITINERARIES.filter(i=>i.region===tripsRegion);
-          const vibeIndex = tripsVibe==="Beach"?0:tripsVibe==="Culture"?1:2;
-          const matchedItin = regionItins[vibeIndex] || regionItins[0];
+          const shownItins = regionItins.slice(0, tripsDuration);
           return (
             <div className="trips-page">
               <div className="trips-hero">
                 <div className="trips-eye">MyGreece ◈ Curated</div>
                 <div className="trips-title">Plan Your<br/><em>Perfect Trip.</em></div>
-                <div className="trips-sub">Choose your region, duration & vibe — we'll build your day.</div>
+                <div className="trips-sub">Choose your region & duration — we'll build your itinerary.</div>
               </div>
 
               <div className="picker-section">
@@ -856,17 +854,6 @@ export default function App() {
                   {[{n:1,l:"Day"},{n:2,l:"Days"},{n:3,l:"Days"},{n:4,l:"Days"}].map(d=>(
                     <div key={d.n} className={`dur-btn ${tripsDuration===d.n?"on":""}`} onClick={()=>setTripsDuration(d.n)}>
                       <span className="dur-num">{d.n}</span>{d.l}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="picker-section">
-                <div className="picker-label">What's your vibe?</div>
-                <div className="vibe-row">
-                  {[{v:"Beach",icon:"🌊"},{v:"Culture",icon:"🏛"},{v:"Mixed",icon:"✨"}].map(({v,icon})=>(
-                    <div key={v} className={`vibe-btn ${tripsVibe===v?"on":""}`} onClick={()=>setTripsVibe(v)}>
-                      <span className="vibe-icon">{icon}</span>{v}
                     </div>
                   ))}
                 </div>
@@ -883,20 +870,26 @@ export default function App() {
 
               <div className="picker-divider"/>
 
-              {tripsDuration > 1 ? (
-                <div className="coming-soon">
-                  <div className="coming-soon-icon">🗓</div>
-                  <div className="coming-soon-title">Coming Soon</div>
-                  <div className="coming-soon-sub">Multi-day itineraries are being curated.<br/>Check back soon for {tripsDuration}-day trips across Crete.</div>
+              <div className="itin-inline-header">
+                <div className="itin-inline-title">
+                  {tripsDuration===1
+                    ? `Your Day in ${tripsRegion}`
+                    : `${tripsDuration} Days in ${tripsRegion}`}
                 </div>
-              ) : matchedItin ? (
-                <>
-                  <div className="itin-inline-header">
-                    <div className="itin-inline-title">Your Day in {tripsRegion}</div>
-                    <div className="itin-inline-badge">{tripsVibe} Vibe</div>
-                  </div>
+                <div className="itin-inline-badge">{tripsDuration} {tripsDuration===1?"Day":"Days"}</div>
+              </div>
+
+              {shownItins.map((itin, dayIdx)=>(
+                <div key={itin.id} style={{marginBottom: dayIdx < shownItins.length-1 ? 32 : 0}}>
+                  {tripsDuration > 1 && (
+                    <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+                      <div style={{fontFamily:"'Playfair Display',serif",fontSize:13,color:"var(--stone)"}}>Day {dayIdx+1}</div>
+                      <div style={{fontFamily:"'Playfair Display',serif",fontSize:16,color:"var(--ink)"}}>{itin.title}</div>
+                      <div style={{flex:1,height:1,background:"var(--sand)"}}/>
+                    </div>
+                  )}
                   <div className="timeline">
-                    {matchedItin.stops.map((stop,i)=>(
+                    {itin.stops.map((stop,i)=>(
                       <div key={i} className="tl-item">
                         <div className={`tl-dot${stop.type==="transit"?" transit":""}`}/>
                         <div className="tl-time-row"><div className="tl-time">{stop.icon} {stop.time}</div><div className="tl-label-text">· {stop.label}</div></div>
@@ -915,14 +908,20 @@ export default function App() {
                       </div>
                     ))}
                   </div>
-                  <div className="highlights-box">
-                    <div className="highlights-title">✦ Experience Highlights</div>
-                    {matchedItin.highlights.map((h,i)=>(
-                      <div key={i} className="highlight-row"><div className="highlight-dot"/><div className="highlight-text">{h}</div></div>
-                    ))}
-                  </div>
-                </>
-              ) : null}
+                  {tripsDuration > 1 && dayIdx < shownItins.length-1 && (
+                    <div style={{height:1,background:"var(--sand)",margin:"24px 0"}}/>
+                  )}
+                </div>
+              ))}
+
+              {shownItins.length > 0 && (
+                <div className="highlights-box" style={{marginTop:24}}>
+                  <div className="highlights-title">✦ Trip Highlights</div>
+                  {shownItins.flatMap(i=>i.highlights).map((h,i)=>(
+                    <div key={i} className="highlight-row"><div className="highlight-dot"/><div className="highlight-text">{h}</div></div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })()}
