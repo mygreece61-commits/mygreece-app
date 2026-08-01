@@ -591,7 +591,20 @@ export default function App() {
     try {
       const res = await fetch(PROXY);
       if (!res.ok) throw new Error(`Server error ${res.status}`);
-      setItems(await res.json());
+      const data = await res.json();
+      setItems(data);
+      // Deep link: check for ?place= in URL and navigate directly to that place
+      const params = new URLSearchParams(window.location.search);
+      const placeName = params.get("place");
+      if (placeName) {
+        const item = data.find(i => i.name === decodeURIComponent(placeName));
+        if (item) {
+          const r = REGIONS.find(r => r.id === item.area) || REGIONS[0];
+          setRegion(r);
+          setDetail(item);
+          setPage("detail");
+        }
+      }
     } catch(e) { setError(e.message); }
     finally { setLoading(false); }
   };
@@ -830,7 +843,7 @@ export default function App() {
                 </button>
                 {detail.category==="Activity"&&detail.gyg&&<button className="gyg-btn" onClick={()=>openExternalLink(detail.gyg,detail,"getyourguide")}><span>🎟</span><span>Book This Activity<span className="gyg-btn-sub">via GetYourGuide · Best Price Guaranteed</span></span></button>}
                 {detail.category==="Hotel"&&detail.booking&&<button className="booking-btn" onClick={()=>openExternalLink(detail.booking,detail,"booking")}><span>🏨</span><span>Book on Booking.com<span className="booking-btn-sub">Best price · Free cancellation available</span></span></button>}
-                <button className="share-btn" onClick={()=>{navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:window.location.href});trackEvent("share_place",{place_name:detail.name});}}><span>↑</span> Share this place</button>
+                <button className="share-btn" onClick={()=>{const shareUrl=`${window.location.origin}${window.location.pathname}?place=${encodeURIComponent(detail.name)}`;navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:shareUrl});trackEvent("share_place",{place_name:detail.name});}}><span>↑</span> Share this place</button>
               </div>
             </div>
           );
