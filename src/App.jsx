@@ -843,7 +843,14 @@ export default function App() {
                 </button>
                 {detail.category==="Activity"&&detail.gyg&&<button className="gyg-btn" onClick={()=>openExternalLink(detail.gyg,detail,"getyourguide")}><span>🎟</span><span>Book This Activity<span className="gyg-btn-sub">via GetYourGuide · Best Price Guaranteed</span></span></button>}
                 {detail.category==="Hotel"&&detail.booking&&<button className="booking-btn" onClick={()=>openExternalLink(detail.booking,detail,"booking")}><span>🏨</span><span>Book on Booking.com<span className="booking-btn-sub">Best price · Free cancellation available</span></span></button>}
-                <button className="share-btn" onClick={()=>{const shareUrl=`${window.location.origin}${window.location.pathname}?place=${encodeURIComponent(detail.name)}`;navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:shareUrl});trackEvent("share_place",{place_name:detail.name});}}><span>↑</span> Share this place</button>
+                <button className="share-btn" onClick={()=>{
+                  const base = "https://mygreece-app.vercel.app/api/og";
+                  const params = new URLSearchParams({place:detail.name});
+                  if(detail.image) params.set("img", detail.image);
+                  const shareUrl = `${base}?${params.toString()}`;
+                  navigator.share&&navigator.share({title:detail.name,text:`Check out ${detail.name} in ${detail.area}, Crete — via MyGreece`,url:shareUrl});
+                  trackEvent("share_place",{place_name:detail.name});
+                }}><span>↑</span> Share this place</button>
               </div>
             </div>
           );
