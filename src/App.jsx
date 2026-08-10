@@ -348,7 +348,18 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .rc-sub{font-size:11px;color:rgba(255,255,255,0.58);margin-top:3px;}
 .rc-badge{position:absolute;top:14px;right:14px;background:rgba(196,165,90,0.18);border:1px solid rgba(196,165,90,0.45);border-radius:20px;padding:4px 12px;font-size:9px;letter-spacing:0.1em;color:var(--gold-lt);}
 
-.rh{height:54vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;}
+.preview-cards{padding:0 20px;display:flex;flex-direction:column;gap:12px;margin-top:28px;}
+.preview-card{border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:transform 0.2s;}
+.preview-card:active{transform:scale(0.98);}
+.preview-card-map{height:140px;background:linear-gradient(135deg,#0A1E28 0%,#1D5A6B 100%);}
+.preview-card-trips{height:140px;background:linear-gradient(135deg,#18181A 0%,#2A2A2A 100%);}
+.preview-card-overlay{position:absolute;inset:0;padding:20px;}
+.preview-card-eye{font-size:9px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.preview-card-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:var(--white);margin-bottom:4px;line-height:1.2;}
+.preview-card-sub{font-size:11px;font-weight:300;color:rgba(255,255,255,0.55);margin-bottom:14px;}
+.preview-card-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(196,165,90,0.15);border:1px solid rgba(196,165,90,0.4);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);}
+.preview-card-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:22px 22px;}
+.preview-card-icon{position:absolute;right:20px;bottom:16px;font-size:42px;opacity:0.15;}
 .rh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 80%,rgba(196,165,90,0.2) 0%,transparent 50%);}
 .rh-fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(18,18,20,0.12) 0%,rgba(18,18,20,0.86) 100%);}
 .rh-c{position:relative;padding:0 24px 28px;width:100%;}
@@ -758,11 +769,31 @@ export default function App() {
                 </div>
               ))}
             </div>
+            <div className="preview-cards">
+              <div className="preview-card preview-card-map" onClick={goMap}>
+                <div className="preview-card-dots"/>
+                <div className="preview-card-overlay">
+                  <div className="preview-card-eye">🗺 Interactive Map</div>
+                  <div className="preview-card-title">Explore Crete<br/>on the Map</div>
+                  <div className="preview-card-sub">{loading?"…":items.filter(i=>i.lat&&i.lng).length}+ places with GPS pins across all regions</div>
+                  <div className="preview-card-btn">Open Map →</div>
+                </div>
+                <div className="preview-card-icon">🗺</div>
+              </div>
+              <div className="preview-card preview-card-trips" onClick={goTrips}>
+                <div className="preview-card-dots"/>
+                <div className="preview-card-overlay">
+                  <div className="preview-card-eye">✈️ Curated Itineraries</div>
+                  <div className="preview-card-title">Plan Your<br/>Perfect Trip</div>
+                  <div className="preview-card-sub">16 hand-picked day trips across all 4 regions of Crete</div>
+                  <div className="preview-card-btn">Browse Trips →</div>
+                </div>
+                <div className="preview-card-icon">✈️</div>
+              </div>
+            </div>
             <div className="pb"/>
           </>
         )}
-
-        {/* REGION */}
         {page==="region" && region && (
           <>
             <div className="rh">
