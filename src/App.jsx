@@ -348,6 +348,18 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .rc-sub{font-size:11px;color:rgba(255,255,255,0.58);margin-top:3px;}
 .rc-badge{position:absolute;top:14px;right:14px;background:rgba(196,165,90,0.18);border:1px solid rgba(196,165,90,0.45);border-radius:20px;padding:4px 12px;font-size:9px;letter-spacing:0.1em;color:var(--gold-lt);}
 
+.feature-section{padding:28px 20px 0;}
+.feature-label{font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.feature-card{background:var(--white);border-radius:18px;padding:20px 16px 18px;border:1px solid var(--sand);cursor:pointer;transition:transform 0.18s;position:relative;overflow:hidden;box-shadow:0 2px 16px rgba(18,18,20,0.06);}
+.feature-card:active{transform:scale(0.97);}
+.feature-card-bar{position:absolute;top:0;left:0;right:0;height:3px;}
+.feature-card-bar-map{background:linear-gradient(90deg,#1D5A6B,#3A9AB2);}
+.feature-card-bar-trips{background:linear-gradient(90deg,#C4A55A,#E8D8AC);}
+.feature-card-icon{font-size:34px;margin-bottom:12px;display:block;}
+.feature-card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--ink);margin-bottom:6px;line-height:1.2;}
+.feature-card-sub{font-size:10px;font-weight:300;color:var(--stone);line-height:1.55;margin-bottom:14px;}
+.feature-card-cta{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);}
 .preview-cards{padding:0 20px;display:flex;flex-direction:column;gap:12px;margin-top:28px;}
 .preview-card{border-radius:18px;overflow:hidden;position:relative;cursor:pointer;transition:transform 0.2s;}
 .preview-card:active{transform:scale(0.98);}
@@ -769,26 +781,23 @@ export default function App() {
                 </div>
               ))}
             </div>
-            <div className="preview-cards">
-              <div className="preview-card preview-card-map" onClick={goMap}>
-                <div className="preview-card-dots"/>
-                <div className="preview-card-overlay">
-                  <div className="preview-card-eye">🗺 Interactive Map</div>
-                  <div className="preview-card-title">Explore Crete<br/>on the Map</div>
-                  <div className="preview-card-sub">{loading?"…":items.filter(i=>i.lat&&i.lng).length}+ places with GPS pins across all regions</div>
-                  <div className="preview-card-btn">Open Map →</div>
+            <div className="feature-section">
+              <div className="feature-label">✦ Also in the App</div>
+              <div className="feature-grid">
+                <div className="feature-card" onClick={goMap}>
+                  <div className="feature-card-bar feature-card-bar-map"/>
+                  <span className="feature-card-icon">🗺</span>
+                  <div className="feature-card-title">Interactive Map</div>
+                  <div className="feature-card-sub">{loading?"…":items.filter(i=>i.lat&&i.lng).length}+ places with GPS pins across Crete</div>
+                  <div className="feature-card-cta">Explore →</div>
                 </div>
-                <div className="preview-card-icon">🗺</div>
-              </div>
-              <div className="preview-card preview-card-trips" onClick={goTrips}>
-                <div className="preview-card-dots"/>
-                <div className="preview-card-overlay">
-                  <div className="preview-card-eye">✈️ Curated Itineraries</div>
-                  <div className="preview-card-title">Plan Your<br/>Perfect Trip</div>
-                  <div className="preview-card-sub">16 hand-picked day trips across all 4 regions of Crete</div>
-                  <div className="preview-card-btn">Browse Trips →</div>
+                <div className="feature-card" onClick={goTrips}>
+                  <div className="feature-card-bar feature-card-bar-trips"/>
+                  <span className="feature-card-icon">✈️</span>
+                  <div className="feature-card-title">Day Trips</div>
+                  <div className="feature-card-sub">16 curated itineraries across all 4 regions</div>
+                  <div className="feature-card-cta">Plan →</div>
                 </div>
-                <div className="preview-card-icon">✈️</div>
               </div>
             </div>
             <div className="pb"/>
