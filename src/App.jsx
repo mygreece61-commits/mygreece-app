@@ -372,6 +372,7 @@ body{font-family:'Jost',sans-serif;background:var(--ivory);color:var(--ink);-web
 .preview-card-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(196,165,90,0.15);border:1px solid rgba(196,165,90,0.4);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);}
 .preview-card-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:22px 22px;}
 .preview-card-icon{position:absolute;right:20px;bottom:16px;font-size:42px;opacity:0.15;}
+.rh{height:54vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;-webkit-mask-image:-webkit-radial-gradient(white,black);transform:translateZ(0);}
 .rh-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 80%,rgba(196,165,90,0.2) 0%,transparent 50%);}
 .rh-fade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(18,18,20,0.12) 0%,rgba(18,18,20,0.86) 100%);}
 .rh-c{position:relative;padding:0 24px 28px;width:100%;}
